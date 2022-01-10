@@ -1,6 +1,7 @@
 export enum Color {
     WHITE = "WHITE",
     BLACK = "BLACK",
+    UNDEFINED = "UNDEFINED"
 }
 
 export enum PieceType {
