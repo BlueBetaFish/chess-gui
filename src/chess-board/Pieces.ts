@@ -23,7 +23,7 @@ export default class Piece {
 
     constructor(
         pieceType: PieceType = PieceType.NONE,
-        pieceColor: Color = Color.WHITE
+        pieceColor: Color = Color.UNDEFINED
     ) {
         this.pieceType = pieceType;
         this.pieceColor = pieceColor;
