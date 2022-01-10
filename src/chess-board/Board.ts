@@ -16,14 +16,18 @@ export class Board {
 
     constructor(
         initialPosition: Piece[][],
-        currentPlayer: Color = Color.WHITE
+        currentPlayer: Color = Color.WHITE,
+        castling: [boolean, boolean, boolean, boolean] = [true, true,true, true],
+        enPassant: Coordinate | null = null,
+        halfMoveClock: number = 0,
+        fullMove: number = 1,
     ) {
         this.currentPlayer = currentPlayer;
         this.boardSize = initialPosition.length;
         this.squares = initialPosition.map((arr) => arr.slice());
-        this.castling = [true, true,true, true];
-        this.enPassant = null;
-        this.halfMoveClock = 0;
-        this.fullMove = 1;
+        this.castling = castling;
+        this.enPassant = enPassant;
+        this.halfMoveClock = halfMoveClock;
+        this.fullMove = fullMove;
     }
 }
