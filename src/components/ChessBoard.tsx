@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types';
 import { Board } from '../chess-board/Board';
 import { type } from 'os';
-import ChessGrid from './ChessGrid';
+import ChessGrid from './ChessSquare';
 import styles from '../styles/ChessBoard.module.css'
 
 
@@ -15,7 +15,7 @@ type State={
 
 const RANKS =['a','b','c','d','e','f','h'];
 const FILES =['1','2','3','4','5','6','7','8'];
-let i=0
+let i=0,j=0
 export default class ChessBoard extends Component<Props,State> {
 
     constructor(props:Props){
@@ -28,10 +28,10 @@ export default class ChessBoard extends Component<Props,State> {
         return (
             <div className={styles.board}>
               {
-              this.props.boardObj?.squares.map(file =>
-                    <div className={styles.boardRow}>
-                    {file.map(piece =>
-                        <ChessGrid piece={piece} key={i++} />
+              this.props.boardObj?.squares.reverse().map((rank , rankNum) =>
+                    <div className={styles.boardRow} key={rankNum}>
+                    {rank.map((piece,fileNum) =>
+                        <ChessGrid piece={piece} key={rankNum*rank.length+fileNum} index={{rankNum,fileNum}}/>
                     )}
                     </div>
                    
