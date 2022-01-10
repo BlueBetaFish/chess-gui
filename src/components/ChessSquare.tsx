@@ -1,118 +1,90 @@
-import React ,{Suspense} from 'react'
-import Piece,{Color, PieceType} from '../chess-board/Pieces'
+import React, { Suspense } from 'react'
+import Piece, { Color, PieceType } from '../chess-board/Pieces'
 import styles from "../styles/ChessGrid.module.css"
 
-type Props={
-    piece:Piece,
-    index:{
-        rankNum:number,
-        fileNum:number
+type Props = {
+    piece: Piece,
+    index: {
+        rankNum: number,
+        fileNum: number
     },
-    theme?:string
+    theme?: string
 }
 
+export default function ChessGrid(props: Props) {
 
-
-
-
-export default function ChessGrid (props:Props) {
-    
     const themeStringPrefix = `assets/pieces/cardinal/`
-    console.log(props.index)
-    // src\assets\pieces\cardinal\bb.svg
-    // getImageSrc(props.piece.pieceType,props.piece.pieceColor)
 
-    
-    function getImageSrc(peiceType:PieceType,peiceColor:Color): string{
-    
-        if(peiceColor === Color.WHITE){
-    
-            switch(peiceType){
-    
+    function getImageSrc(peiceType: PieceType, peiceColor: Color): string {
+
+        if (peiceColor === Color.WHITE) {
+
+            switch (peiceType) {
+
                 case PieceType.PAWN:
-                    return themeStringPrefix+"wp.svg";
-                break;
-    
+                    return themeStringPrefix + "wp.svg";
+
                 case PieceType.KNIGHT:
-                    return themeStringPrefix+"wn.svg";
-                break;
-    
+                    return themeStringPrefix + "wn.svg";
+
                 case PieceType.BISHOP:
-                    return themeStringPrefix+"wb.svg";
-                break;
-    
+                    return themeStringPrefix + "wb.svg";
+
                 case PieceType.ROOK:
-                    return themeStringPrefix+"wr.svg";
-                break;
-    
+                    return themeStringPrefix + "wr.svg";
+
                 case PieceType.QUEEN:
-                    return themeStringPrefix+"wq.svg";
-                break;
-    
+                    return themeStringPrefix + "wq.svg";
+
                 case PieceType.KING:
-                    return themeStringPrefix+"wk.svg";
-                break;
-    
+                    return themeStringPrefix + "wk.svg";
+
             }
         }
-        else{
-    
-            switch(peiceType){
-    
+        else {
+
+            switch (peiceType) {
+
                 case PieceType.PAWN:
-                    return themeStringPrefix+"bp.svg";
-                break;
-    
+                    return themeStringPrefix + "bp.svg";
+
                 case PieceType.KNIGHT:
-                    return themeStringPrefix+"bn.svg";
-                break;
-    
+                    return themeStringPrefix + "bn.svg";
+
                 case PieceType.BISHOP:
-                    return themeStringPrefix+"bb.svg";
-                break;
-    
+                    return themeStringPrefix + "bb.svg";
+
                 case PieceType.ROOK:
-                    return themeStringPrefix+"br.svg";
-                break;
-    
+                    return themeStringPrefix + "br.svg";
+
                 case PieceType.QUEEN:
-                    return themeStringPrefix+"bq.svg";
-                break;
-    
+                    return themeStringPrefix + "bq.svg";
+
                 case PieceType.KING:
-                    return themeStringPrefix+"bk.svg";
-                break;
-    
+                    return themeStringPrefix + "bk.svg";
             }
         }
         return ""
     }
 
-    function isLightSquare():boolean{
-        const {rankNum,fileNum}=props.index;
-        if(rankNum%2==0){
-            return (fileNum%2===0)
+    function isLightSquare(): boolean {
+        const { rankNum, fileNum } = props.index;
+        if (rankNum % 2 == 0) {
+            return (fileNum % 2 === 0)
         }
-        else{
-            return (fileNum%2!==0)
+        else {
+            return (fileNum % 2 !== 0)
         }
     }
 
 
-    if(props.piece.pieceColor === Color.UNDEFINED){
-        
-        return (
-            <div className={[styles.grid, (isLightSquare())? styles.light : styles.dark].join(' ')}>
-
-            </div>
-        )
-    }
-    else{
-
-        return (
-            <div className={[styles.grid, (isLightSquare())? styles.light : styles.dark].join(' ')}>
-               <img src={getImageSrc(props.piece.pieceType,props.piece.pieceColor)}/>
-            </div>
-        )
-    }
+    return (
+        <div className={[styles.grid, (isLightSquare()) ? styles.light : styles.dark].join(' ')}>
+            {
+                (props.piece.pieceColor !== Color.UNDEFINED) ?
+                    <img src={getImageSrc(props.piece.pieceType, props.piece.pieceColor)} />
+                    : <></>
+            }
+        </div>
+    )
 }
