@@ -1,6 +1,6 @@
 import { Board } from "./Board";
 import { Coordinate } from "./chessUtility";
-import { getBoardPositionFromFEN } from "./FEN";
+import { getBoardFromFEN, START_BOARD_FEN } from "./FEN";
 import Move from "./Move";
 import { Color, PieceType, PIECE_POOL } from "./Pieces";
 
@@ -9,8 +9,8 @@ export default class Game {
     currentPlayer: Color | undefined;
     moveHistory: Move[];
 
-    constructor(fen: string = "") {
-        this.board = getBoardPositionFromFEN(fen);
+    constructor(fen: string = START_BOARD_FEN) {
+        this.board = getBoardFromFEN(fen);
 
         this.currentPlayer = this.board?.currentPlayer;
         this.moveHistory = [];
