@@ -6,12 +6,12 @@ export enum Color {
 
 export enum PieceType {
     NONE    = "NONE",
-    PAWN    = "PAWN",
-    KNIGHT  = "KNIGHT",
-    BISHOP  = "BISHOP",
-    ROOK    = "ROOK",
-    QUEEN   = "QUEEN",
-    KING    = "KING",
+    PAWN    = "P",
+    KNIGHT  = "N",
+    BISHOP  = "B",
+    ROOK    = "R",
+    QUEEN   = "Q",
+    KING    = "K",
 }
 
 /**
@@ -27,5 +27,11 @@ export default class Piece {
     ) {
         this.pieceType = pieceType;
         this.pieceColor = pieceColor;
+    }
+
+    getFENSymbol() : string {
+        if (this.pieceColor === Color.BLACK) 
+            return this.pieceType.toLowerCase();
+        return this.pieceType;
     }
 }

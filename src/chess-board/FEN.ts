@@ -2,6 +2,7 @@ import { Board } from "./Board";
 import Piece, { Color, PieceType } from "./Pieces";
 
 const fenCharToPiece : Map<String, Piece> = new Map<String, Piece>();
+fenCharToPiece.set(PieceType.NONE, new Piece(PieceType.NONE,   Color.UNDEFINED));
 fenCharToPiece.set("k", new Piece(PieceType.KING,   Color.BLACK));
 fenCharToPiece.set("q", new Piece(PieceType.QUEEN,  Color.BLACK));
 fenCharToPiece.set("r", new Piece(PieceType.ROOK,   Color.BLACK));
@@ -33,7 +34,11 @@ export function getBoardPositionFromFEN(fen : string) : Board | null {
         }
         else if (Number.isInteger(+char)) {
             let count = +char;
-            while (count-- > 0) rank.push(new Piece());
+            while (count-- > 0) {
+                const piece: Piece | undefined = fenCharToPiece.get(PieceType.NONE);
+                if (piece === undefined) return null;
+                rank.push(piece);
+            }
         } else {
             const piece: Piece | undefined = fenCharToPiece.get(char);
             if (piece === undefined) return null;
