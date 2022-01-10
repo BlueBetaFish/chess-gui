@@ -1,21 +1,21 @@
 export enum Color {
-    WHITE,
-    BLACK,
+    WHITE = "WHITE",
+    BLACK = "BLACK",
 }
 
 export enum PieceType {
-    NONE,
-    PAWN,
-    KNIGHT,
-    BISHOP,
-    ROOK,
-    QUEEN,
-    KING,
+    NONE    = "NONE",
+    PAWN    = "PAWN",
+    KNIGHT  = "KNIGHT",
+    BISHOP  = "BISHOP",
+    ROOK    = "ROOK",
+    QUEEN   = "QUEEN",
+    KING    = "KING",
 }
 
-/*
-class for piece 
-*/
+/**
+ * Class representing a Chess Piece
+ */
 export default class Piece {
     readonly pieceColor: Color;
     readonly pieceType: PieceType;

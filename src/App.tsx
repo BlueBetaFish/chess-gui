@@ -1,11 +1,9 @@
 import "./App.css";
-import { Board } from "./chess-board/Board";
-import Piece, { Color } from "./chess-board/Pieces";
-
-
-import ChessBoard from "./components/ChessBoard";
+import { DEFAULT_BOARD } from "./chess-board/FEN";
 
 function App() {
+    console.log(DEFAULT_BOARD);
+
     return (
         <div className="App">
             {/* <ChessBoard boardObj="hww"  /> */}

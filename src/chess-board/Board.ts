@@ -1,17 +1,14 @@
 import Piece, { Color } from "./Pieces";
 
-// const getBoardPositionFromFEN = function() {
 
-// };
-
-/*
-Class for chess board 
-*/
+/**
+ * Class representing a Chess Board
+ */
 export class Board {
-    boardSize: Number;
+    boardSize: number;
     squares: Piece[][];
     currentPlayer: Color;
-    moveHistory: String[];
+    moveHistory: string[];
 
     constructor(
         initialPosition: Piece[][],
