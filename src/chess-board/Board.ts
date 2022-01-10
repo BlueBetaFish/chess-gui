@@ -1,3 +1,4 @@
+import { Coordinate } from "./chessUtility";
 import Piece, { Color } from "./Pieces";
 
 
@@ -8,7 +9,10 @@ export class Board {
     boardSize: number;
     squares: Piece[][];
     currentPlayer: Color;
-    moveHistory: string[];
+    castling: [boolean, boolean, boolean, boolean];
+    enPassant: Coordinate | null;
+    halfMoveClock: number;
+    fullMove: number;
 
     constructor(
         initialPosition: Piece[][],
@@ -17,6 +21,9 @@ export class Board {
         this.currentPlayer = currentPlayer;
         this.boardSize = initialPosition.length;
         this.squares = initialPosition.map((arr) => arr.slice());
-        this.moveHistory = new Array();
+        this.castling = [true, true,true, true];
+        this.enPassant = null;
+        this.halfMoveClock = 0;
+        this.fullMove = 1;
     }
 }
