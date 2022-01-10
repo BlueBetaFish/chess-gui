@@ -1,30 +1,24 @@
 import React ,{Suspense} from 'react'
 import Piece,{Color, PieceType} from '../chess-board/Pieces'
 import styles from "../styles/ChessGrid.module.css"
-import {useImage} from 'react-image'
 
 type Props={
     piece:Piece,
+    index:{
+        rankNum:number,
+        fileNum:number
+    },
     theme?:string
 }
 
-type ImageProps={
-    srcURL:string
-    altText:string
-}
 
-function Image(props:ImageProps) {
-    const {src} = useImage({
-      srcList: props.srcURL,
-    })
-   
-    return <img src={src} alt={props.srcURL} />
-  }
+
 
 
 export default function ChessGrid (props:Props) {
     
     const themeStringPrefix = `assets/pieces/cardinal/`
+    console.log(props.index)
     // src\assets\pieces\cardinal\bb.svg
     // getImageSrc(props.piece.pieceType,props.piece.pieceColor)
 
@@ -94,11 +88,21 @@ export default function ChessGrid (props:Props) {
         return ""
     }
 
+    function isLightSquare():boolean{
+        const {rankNum,fileNum}=props.index;
+        if(rankNum%2==0){
+            return (fileNum%2===0)
+        }
+        else{
+            return (fileNum%2!==0)
+        }
+    }
+
 
     if(props.piece.pieceColor === Color.UNDEFINED){
         
         return (
-            <div className={styles.grid}>
+            <div className={[styles.grid, (isLightSquare())? styles.light : styles.dark].join(' ')}>
 
             </div>
         )
@@ -106,7 +110,7 @@ export default function ChessGrid (props:Props) {
     else{
 
         return (
-            <div className={styles.grid}>
+            <div className={[styles.grid, (isLightSquare())? styles.light : styles.dark].join(' ')}>
                <img src={getImageSrc(props.piece.pieceType,props.piece.pieceColor)}/>
             </div>
         )
