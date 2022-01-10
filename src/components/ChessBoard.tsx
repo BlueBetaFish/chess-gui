@@ -2,21 +2,41 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types';
 import { Board } from '../chess-board/Board';
 import { type } from 'os';
+import ChessGrid from './ChessGrid';
+import styles from '../styles/ChessBoard.module.css'
 
 
 type Props={
-    boardObj: Board
+    boardObj: Board | null
 }
 type State={
-
+    boardObj: Board | null
 }
 
-
+const RANKS =['a','b','c','d','e','f','h'];
+const FILES =['1','2','3','4','5','6','7','8'];
+let i=0
 export default class ChessBoard extends Component<Props,State> {
+
+    constructor(props:Props){
+        super(props);
+        this.state = {
+            boardObj:props.boardObj
+        }
+    }
     render() {
         return (
-            <div>
-              
+            <div className={styles.board}>
+              {
+              this.props.boardObj?.squares.map(file =>
+                    <div className={styles.boardRow}>
+                    {file.map(piece =>
+                        <ChessGrid piece={piece} key={i++} />
+                    )}
+                    </div>
+                   
+                )
+              }
             </div>
         )
     }
