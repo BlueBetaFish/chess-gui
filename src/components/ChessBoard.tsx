@@ -15,7 +15,7 @@ type State={
 
 const RANKS =['a','b','c','d','e','f','h'];
 const FILES =['1','2','3','4','5','6','7','8'];
-let i=0
+let i=0,j=0
 export default class ChessBoard extends Component<Props,State> {
 
     constructor(props:Props){
@@ -28,10 +28,10 @@ export default class ChessBoard extends Component<Props,State> {
         return (
             <div className={styles.board}>
               {
-              this.props.boardObj?.squares.map(file =>
-                    <div className={styles.boardRow}>
+              this.props.boardObj?.squares.reverse().map(file =>
+                    <div className={styles.boardRow} key={i++}>
                     {file.map(piece =>
-                        <ChessGrid piece={piece} key={i++} />
+                        <ChessGrid piece={piece} key={j++} />
                     )}
                     </div>
                    
