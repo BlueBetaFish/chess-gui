@@ -1,13 +1,14 @@
 import React, { Suspense } from 'react'
 import Piece, { Color, PieceType } from '../chess-board/Pieces'
 import styles from "../styles/ChessGrid.module.css"
+import {Coordinate} from '../chess-board/chessUtility'
+
 
 type Props = {
     piece: Piece,
-    index: {
-        rankNum: number,
-        fileNum: number
-    },
+    index:Coordinate,
+    colorIndex: Coordinate,
+    boardClickListener:any,
     theme?: string
 }
 
@@ -68,18 +69,18 @@ export default function ChessGrid(props: Props) {
     }
 
     function isLightSquare(): boolean {
-        const { rankNum, fileNum } = props.index;
-        if (rankNum % 2 == 0) {
-            return (fileNum % 2 === 0)
+        const { x, y } = props.colorIndex;
+        if (x % 2 == 0) {
+            return (y % 2 === 0)
         }
         else {
-            return (fileNum % 2 !== 0)
+            return (y % 2 !== 0)
         }
     }
 
 
     return (
-        <div className={[styles.grid, (isLightSquare()) ? styles.light : styles.dark].join(' ')}>
+        <div className={[styles.grid, (isLightSquare()) ? styles.light : styles.dark].join(' ')} onClick={(event)=>{props.boardClickListener(event,props.index)}}>
             {
                 (props.piece.pieceColor !== Color.UNDEFINED) ?
                     <img src={getImageSrc(props.piece.pieceType, props.piece.pieceColor)} />

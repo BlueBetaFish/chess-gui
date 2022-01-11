@@ -1,11 +1,15 @@
+import { useState } from "react";
 import "./App.css";
 import { DEFAULT_BOARD } from "./chess-board/FEN";
-import ChessBoard from "./components/ChessBoard";
+import Game from "./chess-board/Game";
+import ChessGame from "./components/ChessGame";
 
 function App() {
+    const [flip,setFlip] = useState(false);
     return (
         <div className="App">
-            <ChessBoard boardObj={DEFAULT_BOARD} />
+            <ChessGame gameObj={new Game()} flipGame={flip}/>
+            <button onClick={()=>{setFlip(!flip)}}>Flip</button>
         </div>
     );
 }
