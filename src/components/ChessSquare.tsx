@@ -1,7 +1,7 @@
-import React, { Suspense } from 'react'
 import Piece, { Color, PieceType } from '../chess-board/Pieces'
-import styles from "../styles/ChessGrid.module.css"
+import styles from "../styles/ChessSquare.module.css"
 import {Coordinate} from '../chess-board/chessUtility'
+
 
 
 type Props = {
@@ -9,6 +9,7 @@ type Props = {
     index:Coordinate,
     colorIndex: Coordinate,
     boardClickListener:any,
+    showMoveIndicator:boolean,
     theme?: string
 }
 
@@ -84,8 +85,11 @@ export default function ChessGrid(props: Props) {
             {
                 (props.piece.pieceColor !== Color.UNDEFINED) ?
                     <img src={getImageSrc(props.piece.pieceType, props.piece.pieceColor)} />
-                    : <></>
-            }
+                    : (<></>)
+
+            }    
+            <img src={'assets/moveIndicator.svg'} className={[styles.moveIndicator, (props.showMoveIndicator)?styles.showMoveIndicator:" "].join(' ')}   />
+        
         </div>
     )
 }

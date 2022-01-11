@@ -1,0 +1,34 @@
+.grid {
+  position: relative;
+  height: 100px;
+  width: 100px;
+  background-color: wheat;
+}
+img {
+  position: relative;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.light {
+  background-color: #d4e0e5;
+}
+
+.dark {
+  background-color: #7699af;
+}
+
+.moveIndicator {
+  display: none;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 50%);
+  width: 50%;
+  height: 50%;
+}
+
+.showMoveIndicator{
+  display: inline;
+}
