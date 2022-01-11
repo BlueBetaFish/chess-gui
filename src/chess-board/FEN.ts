@@ -8,27 +8,18 @@ const PIECE_SYMBOLS = ["k", "q", "r", "b", "n", "p", "K", "Q", "R", "B", "N", "P
 // rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
 
 export const START_BOARD_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-export const DEFAULT_BOARD = getBoardFromFEN(START_BOARD_FEN);
+export const DEFAULT_BOARD = FENToBoard(START_BOARD_FEN);
 
 
 
 // -------------------- FEN to Board --------------------
 
 /**
- * @param FEN FEN string 
- * @returns Board corresponding to FEN string or null if FEN string is invalid / 
- * PIECE_POOL failed to return some piece / some bug
- */
-export function getBoardFromFEN(FEN: string): Board | null {
-    return FENToBoard(FEN);
-}
-
-/**
 * @param FEN FEN string 
 * @returns Board corresponding to FEN string or null if FEN string is invalid / 
 * PIECE_POOL failed to return some piece / some bug
 */
-function FENToBoard(FEN: string): Board | null {
+export function FENToBoard(FEN: string): Board | null {
     let fields = FEN.split(" ");
     if (fields.length !== 6) return null;
 
@@ -79,12 +70,12 @@ function FENToBoardPiece(piecePlacement: string): Piece[][] | null {
             pieces[rank][file] = piece;
             if (++file > 8) return null;
         } else if (char === "/") {
-            if (file != 8) return null;
+            if (file !== 8) return null;
             if (--rank < 0) return null;
             file = 0;
         } else return null;
     }
-    return (rank == 0 && file == 8) ? pieces : null;
+    return (rank === 0 && file === 8) ? pieces : null;
 }
 
 /**
@@ -171,7 +162,7 @@ function boardToFENPieces(pieces: Piece[][]): string | null {
     const result: string[] = [];
     for (let i = 7; i >= 0; i--) {
         for (let j = 0; j < 8; j++) {
-            if (pieces[i][j].pieceType != PieceType.NONE)
+            if (pieces[i][j].pieceType !== PieceType.NONE)
                 result.push(pieces[i][j].getFENSymbol());
             else if (result.length === 0 || !isDigit(result[result.length - 1]))
                 result.push("1");
@@ -238,12 +229,12 @@ function isPseudoValidPiecePlacement(piecePlacement: string): boolean {
         } else if (isPieceSymbol(char)) {
             if (++file > 8) return false;
         } else if (char === '/') {
-            if (file != 8) return false;
+            if (file !== 8) return false;
             if (--rank < 0) return false;
             file = 0;
         } else return false;
     }
-    return (rank == 0 && file == 8);
+    return (rank === 0 && file === 8);
 }
 
 
@@ -278,7 +269,7 @@ function isValidCastlingAvailability(castlingAvailability: string): boolean {
  * @returns true if char is a digit, false otherwise
  */
 function isDigit(char: string): boolean {
-    if (char.length != 1) return false;
+    if (char.length !== 1) return false;
     return Number.isInteger(+char);
 }
 

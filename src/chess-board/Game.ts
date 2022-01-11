@@ -1,8 +1,8 @@
 import { Board } from "./Board";
 import { Coordinate } from "./chessUtility";
-import { getBoardFromFEN, START_BOARD_FEN } from "./FEN";
+import { FENToBoard, START_BOARD_FEN } from "./FEN";
 import Move from "./Move";
-import Piece, { Color, PieceType, PIECE_POOL } from "./Pieces";
+import Piece, { Color, PieceType } from "./Pieces";
 
 export default class Game {
     board: Board | null;
@@ -10,7 +10,7 @@ export default class Game {
     moveHistory: Move[];
 
     constructor(fen: string = START_BOARD_FEN) {
-        this.board = getBoardFromFEN(fen);
+        this.board = FENToBoard(fen);
 
         this.currentPlayer = this.board?.currentPlayer;
         this.moveHistory = [];
@@ -487,7 +487,7 @@ export default class Game {
     getLegalMovesOfGivenSquare(fromSquare: Coordinate): Move[] {
         if (!this.isCoordinateSafe(fromSquare)) return [];
 
-        return this.getPseudoLegalMovesOfGivenSquare(fromSquare);
+        return this.getQueenPseudoLegalMoves(fromSquare);
     }
 
     //*TODO: after making the move check if it a pawn moving 2 steps, if yes , then update the enPassant attribute of board

@@ -1,11 +1,11 @@
-import  React,{ Component } from 'react'
-import  Board  from './ChessBoard'
+import { Component } from 'react'
+import ChessBoard from './ChessBoard'
 import Game from '../chess-board/Game'
 import { Coordinate } from '../chess-board/chessUtility'
 import Move from '../chess-board/Move'
 
 type GameProps = {
-    gameObj: Game 
+    gameObj: Game
     flipGame?: boolean
 }
 
@@ -14,27 +14,28 @@ type GameState = {
 }
 
 
-export default class ChessGame extends Component<GameProps,GameState> {
+export default class ChessGame extends Component<GameProps, GameState> {
 
-    state: Readonly<GameState>={
-        movesList:[]
+    state: Readonly<GameState> = {
+        movesList: []
     }
 
-    constructor(props:GameProps){
+    constructor(props: GameProps) {
         super(props)
         this.clickListener = this.clickListener.bind(this);
     }
 
-    clickListener(event:any,index:Coordinate){
-        this.setState ({
-                movesList: this.props.gameObj.getLegalMovesOfGivenSquare(index)
-            })
+    clickListener(event: any, index: Coordinate) {
+        const legalMovesOfGivenSquare = this.props.gameObj.getLegalMovesOfGivenSquare(index);
+        this.setState({
+            movesList: legalMovesOfGivenSquare
+        })
     }
 
     render() {
         return (
             <div>
-                <Board boardObj={this.props.gameObj.board} gameClickListener={this.clickListener} showMoveinSquare={this.state.movesList} flipBoard={this.props.flipGame}/>
+                <ChessBoard boardObj={this.props.gameObj.board} gameClickListener={this.clickListener} showMoveinSquare={this.state.movesList} flipBoard={this.props.flipGame} />
             </div>
         )
     }

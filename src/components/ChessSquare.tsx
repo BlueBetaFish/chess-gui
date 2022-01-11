@@ -1,15 +1,15 @@
 import Piece, { Color, PieceType } from '../chess-board/Pieces'
 import styles from "../styles/ChessSquare.module.css"
-import {Coordinate} from '../chess-board/chessUtility'
+import { Coordinate } from '../chess-board/chessUtility'
 
 
 
 type Props = {
     piece: Piece,
-    index:Coordinate,
+    index: Coordinate,
     colorIndex: Coordinate,
-    boardClickListener:any,
-    showMoveIndicator:boolean,
+    boardClickListener: any,
+    showMoveIndicator: boolean,
     theme?: string
 }
 
@@ -71,7 +71,7 @@ export default function ChessGrid(props: Props) {
 
     function isLightSquare(): boolean {
         const { x, y } = props.colorIndex;
-        if (x % 2 == 0) {
+        if (x % 2 === 0) {
             return (y % 2 === 0)
         }
         else {
@@ -81,15 +81,15 @@ export default function ChessGrid(props: Props) {
 
 
     return (
-        <div className={[styles.grid, (isLightSquare()) ? styles.light : styles.dark].join(' ')} onClick={(event)=>{props.boardClickListener(event,props.index)}}>
+        <div className={[styles.grid, (isLightSquare()) ? styles.light : styles.dark].join(' ')} onClick={(event) => { props.boardClickListener(event, props.index) }}>
             {
                 (props.piece.pieceColor !== Color.UNDEFINED) ?
                     <img src={getImageSrc(props.piece.pieceType, props.piece.pieceColor)} />
                     : (<></>)
 
-            }    
-            <img src={'assets/moveIndicator.svg'} className={[styles.moveIndicator, (props.showMoveIndicator)?styles.showMoveIndicator:" "].join(' ')}   />
-        
+            }
+            <img src={'assets/moveIndicator.svg'} className={[styles.moveIndicator, (props.showMoveIndicator) ? styles.showMoveIndicator : " "].join(' ')} />
+
         </div>
     )
 }

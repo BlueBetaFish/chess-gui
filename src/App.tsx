@@ -1,6 +1,5 @@
 import { useState } from "react";
 import "./App.css";
-import { DEFAULT_BOARD } from "./chess-board/FEN";
 import Game from "./chess-board/Game";
 import ChessGame from "./components/ChessGame";
 
