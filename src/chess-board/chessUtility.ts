@@ -6,6 +6,10 @@ export class Coordinate {
         this.x = x;
         this.y = y;
     }
+
+    equals(newCoordinate: Coordinate): boolean {
+        return this.x === newCoordinate.x && this.y === newCoordinate.y;
+    }
 }
 
 export function isValidAlgebricCoordinate(algebricCoordinate: string): boolean {
