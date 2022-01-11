@@ -90,13 +90,13 @@ export default class Game {
         //if square is not inside board
         if (!this.isCoordinateSafe(fromSquare)) return [];
 
-        //if piece at the given square is not rook
-        if (
-            !this.board?.squares[fromSquare.x][fromSquare.y].isPieceType(
-                PieceType.ROOK
-            )
-        )
-            return [];
+        // //if piece at the given square is not rook
+        // if (
+        //     !this.board?.squares[fromSquare.x][fromSquare.y].isPieceType(
+        //         PieceType.ROOK
+        //     )
+        // )
+        //     return [];
 
         //direction vector for rook
         let dxy = [
@@ -116,13 +116,13 @@ export default class Game {
         //if square is not inside board
         if (!this.isCoordinateSafe(fromSquare)) return [];
 
-        //if piece at the given square is not rook
-        if (
-            !this.board?.squares[fromSquare.x][fromSquare.y].isPieceType(
-                PieceType.BISHOP
-            )
-        )
-            return [];
+        // //if piece at the given square is not rook
+        // if (
+        //     !this.board?.squares[fromSquare.x][fromSquare.y].isPieceType(
+        //         PieceType.BISHOP
+        //     )
+        // )
+        //     return [];
 
         //direction vector for bishop
         let dxy = [
@@ -142,13 +142,13 @@ export default class Game {
         //if square is not inside board
         if (!this.isCoordinateSafe(fromSquare)) return [];
 
-        //if piece at the given square is not rook
-        if (
-            !this.board?.squares[fromSquare.x][fromSquare.y].isPieceType(
-                PieceType.QUEEN
-            )
-        )
-            return [];
+        // //if piece at the given square is not rook
+        // if (
+        //     !this.board?.squares[fromSquare.x][fromSquare.y].isPieceType(
+        //         PieceType.QUEEN
+        //     )
+        // )
+        //     return [];
 
         //direction vector for rook
         let dxyRook = [
@@ -185,4 +185,10 @@ export default class Game {
     private getPawnPseudoLegalMoves(fromSquare: Coordinate) {}
 
     getPseudoLegalMovesOfGivenSquare(fromSquare: Coordinate) {}
+
+    getLegalMovesOfGivenSquare(fromSquare: Coordinate): Move[] {
+        if (!this.isCoordinateSafe(fromSquare)) return [];
+
+        return this.getQueenPseudoLegalMoves(fromSquare);
+    }
 }
