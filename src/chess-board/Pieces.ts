@@ -46,25 +46,46 @@ export default class Piece {
     isPieceType(pieceType: PieceType): boolean {
         return this.pieceType === pieceType;
     }
+
+    getOppositeColor(): Color {
+        if (this.pieceColor === Color.WHITE) return Color.BLACK;
+        else if (this.pieceColor === Color.BLACK) return Color.WHITE;
+        else return Color.UNDEFINED;
+    }
 }
 
 class PiecePool {
-    private readonly FENSymbolToPiece: Map<String, Piece>; 
+    private readonly FENSymbolToPiece: Map<String, Piece>;
 
     constructor() {
-        this.FENSymbolToPiece = new Map<String,Piece>();
-        this.FENSymbolToPiece.set("",  new Piece(PieceType.NONE, Color.UNDEFINED));
+        this.FENSymbolToPiece = new Map<String, Piece>();
+        this.FENSymbolToPiece.set(
+            "",
+            new Piece(PieceType.NONE, Color.UNDEFINED)
+        );
         this.FENSymbolToPiece.set("k", new Piece(PieceType.KING, Color.BLACK));
         this.FENSymbolToPiece.set("q", new Piece(PieceType.QUEEN, Color.BLACK));
         this.FENSymbolToPiece.set("r", new Piece(PieceType.ROOK, Color.BLACK));
-        this.FENSymbolToPiece.set("b", new Piece(PieceType.BISHOP, Color.BLACK));
-        this.FENSymbolToPiece.set("n", new Piece(PieceType.KNIGHT, Color.BLACK));
+        this.FENSymbolToPiece.set(
+            "b",
+            new Piece(PieceType.BISHOP, Color.BLACK)
+        );
+        this.FENSymbolToPiece.set(
+            "n",
+            new Piece(PieceType.KNIGHT, Color.BLACK)
+        );
         this.FENSymbolToPiece.set("p", new Piece(PieceType.PAWN, Color.BLACK));
         this.FENSymbolToPiece.set("K", new Piece(PieceType.KING, Color.WHITE));
         this.FENSymbolToPiece.set("Q", new Piece(PieceType.QUEEN, Color.WHITE));
         this.FENSymbolToPiece.set("R", new Piece(PieceType.ROOK, Color.WHITE));
-        this.FENSymbolToPiece.set("B", new Piece(PieceType.BISHOP, Color.WHITE));
-        this.FENSymbolToPiece.set("N", new Piece(PieceType.KNIGHT, Color.WHITE));
+        this.FENSymbolToPiece.set(
+            "B",
+            new Piece(PieceType.BISHOP, Color.WHITE)
+        );
+        this.FENSymbolToPiece.set(
+            "N",
+            new Piece(PieceType.KNIGHT, Color.WHITE)
+        );
         this.FENSymbolToPiece.set("P", new Piece(PieceType.PAWN, Color.WHITE));
     }
 

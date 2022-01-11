@@ -129,7 +129,7 @@ export default class Game {
             [-1, -1],
             [1, 1],
             [1, -1],
-            [1, 1],
+            [-1, 1],
         ];
 
         return this.getSlidingPiecePseudoLegalMovesFromDirectionVector(
@@ -163,7 +163,7 @@ export default class Game {
             [-1, -1],
             [1, 1],
             [1, -1],
-            [1, 1],
+            [-1, 1],
         ];
 
         let movesRook = this.getSlidingPiecePseudoLegalMovesFromDirectionVector(
@@ -287,12 +287,63 @@ export default class Game {
             1. Check promotion : Done 
             2. Check En passant : DONE
         */
-        if (currentPiece?.pieceColor === Color.WHITE) {
-            //if the square infront of pawn is inside board
-            if (x + 1 < (this.board?.boardSize ? this.board.boardSize : -100)) {
-                //if square infront of pawn is empty , then it can move to that square
-                let toSquare = new Coordinate(x + 1, y);
-                if (this.isSquareEmpty(toSquare)) {
+
+        let toSquare: Coordinate;
+
+        //*get the square infront of pawn in 1 step
+        if (currentPiece?.pieceColor === Color.WHITE)
+            toSquare = new Coordinate(x + 1, y);
+        //for black pawn
+        else toSquare = new Coordinate(x - 1, y);
+
+        //if the square infront of pawn is inside board
+        if (this.isCoordinateSafe(toSquare)) {
+            //if square infront of pawn is empty , then it can move to that square
+            if (this.isSquareEmpty(toSquare)) {
+                moves.push(
+                    new Move(
+                        fromSquare,
+                        toSquare,
+                        currentPiece,
+                        this.board?.squares[toSquare.x][toSquare.y]
+                    )
+                );
+
+                //*if the pawn is on 2nd rank for white or on 7th rank for black , it can move 2 steps
+                if (
+                    (currentPiece?.pieceColor === Color.WHITE && x === 1) ||
+                    (currentPiece?.pieceColor === Color.BLACK && x === 6)
+                ) {
+                    //we already checked the first square in front of pawn is empty
+                    //only check if the square after 2 step is empty or not
+                    if (currentPiece.pieceColor === Color.WHITE)
+                        toSquare = new Coordinate(x + 2, y);
+                    else toSquare = new Coordinate(x - 2, y);
+
+                    if (this.isSquareEmpty(toSquare))
+                        moves.push(
+                            new Move(
+                                fromSquare,
+                                toSquare,
+                                currentPiece,
+                                this.board?.squares[toSquare.x][toSquare.y]
+                            )
+                        );
+                }
+            }
+
+            //*check for captures :_____________________________________________________________________________
+            //*Front right square
+            if (currentPiece?.pieceColor === Color.WHITE)
+                toSquare = new Coordinate(x + 1, y + 1);
+            else toSquare = new Coordinate(x - 1, y - 1);
+
+            if (this.isCoordinateSafe(toSquare)) {
+                //if an opposite colored piece is present at front right corner
+                if (
+                    this.board?.squares[toSquare.x][toSquare.y].pieceColor ===
+                    currentPiece?.getOppositeColor()
+                )
                     moves.push(
                         new Move(
                             fromSquare,
@@ -302,103 +353,80 @@ export default class Game {
                         )
                     );
 
-                    //*if the pawn is on 2nd rank , it can move 2 steps
-                    if (x === 1) {
-                        //we already checked (x+1, y) is empty
-                        //only check if (x+2, y) is empty or not
-                        toSquare = new Coordinate(x + 2, y);
-
-                        if (this.isSquareEmpty(toSquare))
-                            moves.push(
-                                new Move(
-                                    fromSquare,
-                                    toSquare,
-                                    currentPiece,
-                                    this.board?.squares[toSquare.x][toSquare.y]
-                                )
-                            );
-                    }
+                //*check if enPassant is possible at the front right square of the pawn
+                if (
+                    this.board &&
+                    this.board?.enPassant &&
+                    this.board.enPassant.equals(toSquare)
+                ) {
+                    let capturedPieceCoordinate =
+                        currentPiece?.pieceColor === Color.WHITE
+                            ? new Coordinate(toSquare.x - 1, toSquare.y)
+                            : new Coordinate(toSquare.x + 1, toSquare.y);
+                    moves.push(
+                        new Move(
+                            fromSquare,
+                            toSquare,
+                            currentPiece,
+                            /* Here capturedPiece's coordinate is not equal to toSquare  */
+                            this.board?.squares[capturedPieceCoordinate.x][
+                                capturedPieceCoordinate.y
+                            ],
+                            new Piece() /*Promoted piece is empty*/,
+                            true /* tick the "wasEnPassant" as true */
+                        )
+                    );
                 }
+            }
 
-                //*check for captures :_____________________________________________________________________________
-                //*Front right square
-                toSquare = new Coordinate(x + 1, y + 1);
-                if (this.isCoordinateSafe(toSquare)) {
-                    //if an opposite colored piece is present at front right corner
-                    if (
-                        this.board?.squares[toSquare.x][toSquare.y]
-                            .pieceColor === Color.BLACK
-                    )
-                        moves.push(
-                            new Move(
-                                fromSquare,
-                                toSquare,
-                                currentPiece,
-                                this.board?.squares[toSquare.x][toSquare.y]
-                            )
-                        );
-
-                    //*check if enPassant is possible at the front right square of the pawn
-                    if (
-                        this.board?.enPassant &&
-                        this.board.enPassant.equals(toSquare)
-                    ) {
-                        moves.push(
-                            new Move(
-                                fromSquare,
-                                toSquare,
-                                currentPiece,
-                                /* Here capturedPiece's coordinate is not equal to toSquare  */
-                                this.board?.squares[toSquare.x - 1][toSquare.y],
-                                new Piece() /*Promoted piece is empty*/,
-                                true /* tick the "wasEnPassant" as true */
-                            )
-                        );
-                    }
-                }
-
-                //*Front left square
+            //*Front left square
+            if (currentPiece?.pieceColor === Color.WHITE)
                 toSquare = new Coordinate(x + 1, y - 1);
-                if (this.isCoordinateSafe(toSquare)) {
-                    //if an opposite colored piece is present at front right corner
-                    if (
-                        this.board?.squares[toSquare.x][toSquare.y]
-                            .pieceColor === Color.BLACK
-                    )
-                        moves.push(
-                            new Move(
-                                fromSquare,
-                                toSquare,
-                                currentPiece,
-                                this.board?.squares[toSquare.x][toSquare.y]
-                            )
-                        );
+            else toSquare = new Coordinate(x - 1, y + 1);
 
-                    //*check if enPassant is possible at the front left square of the pawn
-                    if (
-                        this.board?.enPassant &&
-                        this.board.enPassant.equals(toSquare)
-                    ) {
-                        moves.push(
-                            new Move(
-                                fromSquare,
-                                toSquare,
-                                currentPiece,
-                                /* Here capturedPiece's coordinate is not equal to toSquare  */
-                                this.board?.squares[toSquare.x - 1][toSquare.y],
-                                new Piece() /*Promoted piece is empty*/,
-                                true /* tick the "wasEnPassant" as true */
-                            )
-                        );
-                    }
+            if (this.isCoordinateSafe(toSquare)) {
+                //if an opposite colored piece is present at front right corner
+                if (
+                    this.board?.squares[toSquare.x][toSquare.y].pieceColor ===
+                    currentPiece?.getOppositeColor()
+                )
+                    moves.push(
+                        new Move(
+                            fromSquare,
+                            toSquare,
+                            currentPiece,
+                            this.board?.squares[toSquare.x][toSquare.y]
+                        )
+                    );
+
+                //*check if enPassant is possible at the front left square of the pawn
+                if (
+                    this.board?.enPassant &&
+                    this.board.enPassant.equals(toSquare)
+                ) {
+                    let capturedPieceCoordinate =
+                        currentPiece?.pieceColor === Color.WHITE
+                            ? new Coordinate(toSquare.x - 1, toSquare.y)
+                            : new Coordinate(toSquare.x + 1, toSquare.y);
+                    moves.push(
+                        new Move(
+                            fromSquare,
+                            toSquare,
+                            currentPiece,
+                            /* Here capturedPiece's coordinate is not equal to toSquare  */
+                            this.board?.squares[capturedPieceCoordinate.x][
+                                capturedPieceCoordinate.y
+                            ],
+                            new Piece() /*Promoted piece is empty*/,
+                            true /* tick the "wasEnPassant" as true */
+                        )
+                    );
                 }
             }
         }
-        //*TODO: black pawn
-        else if (currentPiece?.pieceColor === Color.BLACK) {
-        }
 
         //*check for promotions : if the toSquare of any move is the last rank then add promotion (for testing purpose now , the pawn is promoted to queen)
+        let newMovesWithPromotions = [...moves];
         for (let i = 0; i < moves.length; i++) {
             let move = moves[i];
 
@@ -418,7 +446,7 @@ export default class Game {
                 );
 
                 //and add other moves which will promote the pawn to rook , bishop and knight
-                moves.push(
+                newMovesWithPromotions.push(
                     new Move(
                         move.fromSquare,
                         move.toSquare,
@@ -427,7 +455,7 @@ export default class Game {
                         new Piece(PieceType.ROOK)
                     )
                 );
-                moves.push(
+                newMovesWithPromotions.push(
                     new Move(
                         move.fromSquare,
                         move.toSquare,
@@ -436,7 +464,7 @@ export default class Game {
                         new Piece(PieceType.BISHOP)
                     )
                 );
-                moves.push(
+                newMovesWithPromotions.push(
                     new Move(
                         move.fromSquare,
                         move.toSquare,
@@ -448,7 +476,7 @@ export default class Game {
             }
         }
 
-        return moves;
+        return newMovesWithPromotions;
     }
 
     getPseudoLegalMovesOfGivenSquare(fromSquare: Coordinate): Move[] {
@@ -471,12 +499,12 @@ export default class Game {
             return this.getKingPseudoLegalMoves(fromSquare);
         else if (currentPiece?.isPieceType(PieceType.KNIGHT))
             return this.getKnightPseudoLegalMoves(fromSquare);
-        else if (currentPiece?.isPieceType(PieceType.PAWN))
-            return this.getPawnPseudoLegalMoves(fromSquare);
         else if (currentPiece?.isPieceType(PieceType.QUEEN))
             return this.getQueenPseudoLegalMoves(fromSquare);
         else if (currentPiece?.isPieceType(PieceType.ROOK))
             return this.getRookPseudoLegalMoves(fromSquare);
+        else if (currentPiece?.isPieceType(PieceType.PAWN))
+            return this.getPawnPseudoLegalMoves(fromSquare);
 
         //if anything goes wrong, return empty list
         return [];
@@ -487,7 +515,7 @@ export default class Game {
     getLegalMovesOfGivenSquare(fromSquare: Coordinate): Move[] {
         if (!this.isCoordinateSafe(fromSquare)) return [];
 
-        return this.getQueenPseudoLegalMoves(fromSquare);
+        return this.getPseudoLegalMovesOfGivenSquare(fromSquare);
     }
 
     //*TODO: after making the move check if it a pawn moving 2 steps, if yes , then update the enPassant attribute of board
