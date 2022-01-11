@@ -15,7 +15,7 @@ const PIECE_SYMBOLS = ["k", "q", "r", "b", "n", "p", "K", "Q", "R", "B", "N", "P
 // 8/2Rn4/3b2PK/4p1pb/4k1pq/4N3/pP1p3n/8 w - - 0 1
 // 6R1/r5b1/P2q3R/3kP3/1P4p1/Bp3N1P/1K5P/8 w - - 0 1
 
-export const START_BOARD_FEN = "6R1/r5b1/P2q3R/3kP3/1P4p1/Bp3N1P/1K5P/8 w - - 0 1";
+export const START_BOARD_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 export const DEFAULT_BOARD = getBoardFromFEN(START_BOARD_FEN);
 
 
