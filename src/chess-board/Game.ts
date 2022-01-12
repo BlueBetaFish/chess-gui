@@ -532,6 +532,9 @@ export default class Game {
         //to satisfy the null value of this.board
         if (!this.board) return null;
 
+        //*-3: make the enPassant attribute of board null before executing move, and if the move causes enPassant , then update it later
+        this.board.enPassant = null;
+
         //*TODO:-2. Update halfMoveClock and fullMove attributes of board
 
         //*-1. Change currentPlayer
@@ -625,18 +628,33 @@ export default class Game {
         this.board.squares[move.fromSquare.x][move.fromSquare.y] =
             move.pieceMoved;
 
-        //*2.put the captured at targetSquare if the move was not enPassant
+        //*make the toSquare empty first, later put capturedPiece if the move was not enPassant --> without making the toSquare empty at first, code was producing bog :)
+        this.board.squares[move.toSquare.x][move.toSquare.y] =
+            this.getEmptySquare();
+
+        //*2.put the captured piece at targetSquare if the move was not enPassant
         if (!move.wasEnPassant)
             this.board.squares[move.toSquare.x][move.toSquare.y] =
                 move.capturedPiece;
-        //*3. if move was enPassant , then put the capturedPiece at correct square
-        else {
+
+        //*3. if we roll back enPassant , then put the capturedPiece at correct square, and set the enPassant attribute of board
+        if (move.wasEnPassant) {
             if (move.pieceMoved.pieceColor === Color.WHITE) {
                 this.board.squares[move.toSquare.x - 1][move.toSquare.y] =
                     move.capturedPiece;
+
+                this.board.enPassant = new Coordinate(
+                    move.toSquare.x,
+                    move.toSquare.y
+                );
             } else if (move.pieceMoved.pieceColor === Color.BLACK) {
                 this.board.squares[move.toSquare.x + 1][move.toSquare.y] =
                     move.capturedPiece;
+
+                this.board.enPassant = new Coordinate(
+                    move.toSquare.x,
+                    move.toSquare.y
+                );
             }
         }
 
@@ -661,10 +679,10 @@ export default class Game {
 
         //*TODO:7. after making the move check if any castling ability is violated , and update the "castling" attribute of board
 
-        console.log("for move : ");
-        console.log(move);
-        console.log("fen after rolling back move: ");
-        console.log(boardToFEN(this.board));
+        // console.log("for move : ");
+        // console.log(move);
+        // console.log("fen after rolling back move: ");
+        // console.log(boardToFEN(this.board));
 
         return this.board.getNewBoard();
     }
@@ -699,9 +717,9 @@ export default class Game {
         let pseudoLegalMoves =
             this.getPseudoLegalMovesOfGivenSquare(fromSquare);
 
-        console.log(
-            `king coordinate : (${currentPlayerKingCoordinate.x} , ${currentPlayerKingCoordinate.y})`
-        );
+        // console.log(
+        //     `king coordinate : (${currentPlayerKingCoordinate.x} , ${currentPlayerKingCoordinate.y})`
+        // );
 
         // console.log("pseudo legal moves : ");
         // console.log(pseudoLegalMoves);
