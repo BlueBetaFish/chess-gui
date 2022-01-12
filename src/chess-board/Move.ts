@@ -31,4 +31,16 @@ export default class Move {
         this.wasEnPassant = wasEnPassant;
         this.wasCastle = wasCastle;
     }
+
+    equals(newMove: Move): boolean {
+        return (
+            this.fromSquare === newMove.fromSquare &&
+            this.toSquare === newMove.toSquare &&
+            this.pieceMoved === newMove.pieceMoved &&
+            this.capturedPiece === newMove.capturedPiece &&
+            this.promotedPiece === newMove.promotedPiece &&
+            this.wasEnPassant === newMove.wasEnPassant &&
+            this.wasCastle === newMove.wasCastle
+        );
+    }
 }
