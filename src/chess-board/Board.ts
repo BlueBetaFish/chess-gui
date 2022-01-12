@@ -18,10 +18,10 @@ export class Board {
     constructor(
         initialPosition: Piece[][],
         currentPlayer: Color = Color.WHITE,
-        castling: CastlingAvailability = [true, true,true, true],
+        castling: CastlingAvailability = [true, true, true, true],
         enPassant: Coordinate | null = null,
         halfMoveClock: number = 0,
-        fullMove: number = 1,
+        fullMove: number = 1
     ) {
         this.currentPlayer = currentPlayer;
         this.boardSize = initialPosition.length;
@@ -30,5 +30,25 @@ export class Board {
         this.enPassant = enPassant;
         this.halfMoveClock = halfMoveClock;
         this.fullMove = fullMove;
+    }
+
+    /**
+     * Creates a new board by copying the attributes of given "board" as paramater and returns the newBoard
+     * @param board
+     * @returns new Board Object
+     */
+    getNewBoard(): Board {
+        let newSquares: Piece[][] = [];
+        for (let i = 0; i < this.squares.length; i++)
+            newSquares[i] = this.squares[i].slice();
+
+        return new Board(
+            newSquares,
+            this.currentPlayer,
+            this.castling,
+            this.enPassant,
+            this.halfMoveClock,
+            this.fullMove
+        );
     }
 }

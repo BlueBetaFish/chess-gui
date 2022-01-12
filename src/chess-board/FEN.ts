@@ -1,24 +1,41 @@
 import { Board, CastlingAvailability } from "./Board";
-import { Coordinate, getAlgebricCoordinateFromIndices, getIndicesFromAlgebricCoordinate, isValidAlgebricCoordinate } from "./chessUtility";
+import {
+    Coordinate,
+    getAlgebricCoordinateFromIndices,
+    getIndicesFromAlgebricCoordinate,
+    isValidAlgebricCoordinate,
+} from "./chessUtility";
 import Piece, { Color, PIECE_POOL, PieceType } from "./Pieces";
 
-const PIECE_SYMBOLS = ["k", "q", "r", "b", "n", "p", "K", "Q", "R", "B", "N", "P"];
+const PIECE_SYMBOLS = [
+    "k",
+    "q",
+    "r",
+    "b",
+    "n",
+    "p",
+    "K",
+    "Q",
+    "R",
+    "B",
+    "N",
+    "P",
+];
 
 // Default start FEN
 // rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
 
-export const START_BOARD_FEN = "n2B4/2P1p3/2P2p2/1P4PK/N7/kB6/pp2Pb2/8 w - - 0 1";
+export const START_BOARD_FEN =
+    "4Q3/3PrNBb/p24r/KpP1P3/3pqPk1/p1pP4/p5pp/1r1R4 w - b6 0 1";
 export const DEFAULT_BOARD = FENToBoard(START_BOARD_FEN);
-
-
 
 // -------------------- FEN to Board --------------------
 
 /**
-* @param FEN FEN string 
-* @returns Board corresponding to FEN string or null if FEN string is invalid / 
-* PIECE_POOL failed to return some piece / some bug
-*/
+ * @param FEN FEN string
+ * @returns Board corresponding to FEN string or null if FEN string is invalid /
+ * PIECE_POOL failed to return some piece / some bug
+ */
 export function FENToBoard(FEN: string): Board | null {
     let fields = FEN.split(" ");
     if (fields.length !== 6) return null;
@@ -28,7 +45,8 @@ export function FENToBoard(FEN: string): Board | null {
     // console.log("piece position field (1st) correct");
 
     const currentPlayer = FENToBoardPlayer(fields[1]);
-    if (currentPlayer === null || currentPlayer === Color.UNDEFINED) return null;
+    if (currentPlayer === null || currentPlayer === Color.UNDEFINED)
+        return null;
     // console.log("current player field (2nd) correct");
 
     const castlingAvailability = FENToBoardCastling(fields[2]);
@@ -47,19 +65,26 @@ export function FENToBoard(FEN: string): Board | null {
     const fullMove = +fields[5];
     // console.log("fullmove field (6th) correct");
 
-    return new Board(pieces, currentPlayer, castlingAvailability, enPassant, halfMoves, fullMove);
+    return new Board(
+        pieces,
+        currentPlayer,
+        castlingAvailability,
+        enPassant,
+        halfMoves,
+        fullMove
+    );
 }
-
 
 /**
  * @param piecePlacement piece placement field (1st) of a FEN string
  * @returns 8*8 matrix containing pieces or null if piece placement
- * is invalid or could not get some piece from the PIECE_POOL 
+ * is invalid or could not get some piece from the PIECE_POOL
  */
 function FENToBoardPiece(piecePlacement: string): Piece[][] | null {
     const pieces = getEmptyBoard();
     if (pieces === null) return null;
-    let rank = 7, file = 0;
+    let rank = 7,
+        file = 0;
     for (const char of piecePlacement) {
         if (isDigit(char)) {
             file += +char;
@@ -75,7 +100,7 @@ function FENToBoardPiece(piecePlacement: string): Piece[][] | null {
             file = 0;
         } else return null;
     }
-    return (rank === 0 && file === 8) ? pieces : null;
+    return rank === 0 && file === 8 ? pieces : null;
 }
 
 /**
@@ -108,17 +133,17 @@ function FENToBoardCastling(castling: string): CastlingAvailability | null {
 /**
  * @param enPassantField En Passant field of FEN string
  * @returns Coordinate corresponding to En Passant square, null if "-" or undefined
- * if string is neither "-" nor a valid algebraic coordinate 
+ * if string is neither "-" nor a valid algebraic coordinate
  */
-function FENToBoardEnPassant(enPassantField: string): Coordinate | null | undefined {
+function FENToBoardEnPassant(
+    enPassantField: string
+): Coordinate | null | undefined {
     if (enPassantField === "-") return null;
     if (!isValidAlgebricCoordinate(enPassantField)) return undefined;
     return getIndicesFromAlgebricCoordinate(enPassantField);
 }
 
 // -------------------- -------------------- --------------------
-
-
 
 // -------------------- Board to FEN --------------------
 
@@ -140,16 +165,16 @@ export function boardToFEN(board: Board): string | null {
 
     if (board.enPassant === null) {
         fields[3] = "-";
-    }
-    else {
-        const algeraicCoordinate = getAlgebricCoordinateFromIndices(board.enPassant);
+    } else {
+        const algeraicCoordinate = getAlgebricCoordinateFromIndices(
+            board.enPassant
+        );
         if (algeraicCoordinate === null) return null;
         fields[3] = algeraicCoordinate;
     }
 
     fields[4] = "" + board.halfMoveClock;
     fields[5] = "" + board.fullMove;
-
 
     return fields.join(" ");
 }
@@ -168,7 +193,9 @@ function boardToFENPieces(pieces: Piece[][]): string | null {
                 result.push("1");
             else {
                 if (+result[result.length - 1] > 8) return null;
-                result[result.length - 1] = String.fromCharCode(result[result.length - 1].charCodeAt(0) + 1);
+                result[result.length - 1] = String.fromCharCode(
+                    result[result.length - 1].charCodeAt(0) + 1
+                );
             }
         }
         if (i > 0) result.push("/");
@@ -190,13 +217,9 @@ function boardToFENCastling(castling: CastlingAvailability): string {
     return result;
 }
 
-
 // -------------------- -------------------- -------------
 
-
-
 // -------------------- FEN validation --------------------
-
 
 /**
  * @param FEN a FEN string
@@ -206,40 +229,42 @@ export function isPseudoValidFENString(FEN: string): boolean {
     let fields = FEN.split(" ");
     if (fields.length !== 6) return false;
 
-    return isPseudoValidPiecePlacement(fields[0])
-        && (fields[1] === 'w' || fields[1] === 'b')
-        && isValidCastlingAvailability(fields[2])
-        && (fields[3] === "-" || isValidAlgebricCoordinate(fields[3]))
-        && (Number.isInteger(+fields[4]) && +fields[4] >= 0)
-        && (Number.isInteger(+fields[5]) && +fields[5] >= 1)
-        ;
+    return (
+        isPseudoValidPiecePlacement(fields[0]) &&
+        (fields[1] === "w" || fields[1] === "b") &&
+        isValidCastlingAvailability(fields[2]) &&
+        (fields[3] === "-" || isValidAlgebricCoordinate(fields[3])) &&
+        Number.isInteger(+fields[4]) &&
+        +fields[4] >= 0 &&
+        Number.isInteger(+fields[5]) &&
+        +fields[5] >= 1
+    );
 }
-
 
 /**
  * @param piecePlacement piece placement field of a FEN string
  * @returns true if it is pseudo valid, false otherwise
  */
 function isPseudoValidPiecePlacement(piecePlacement: string): boolean {
-    let rank = 7, file = 0;
+    let rank = 7,
+        file = 0;
     for (const char of piecePlacement) {
         if (isDigit(char)) {
             file += +char;
             if (file > 8) return false;
         } else if (isPieceSymbol(char)) {
             if (++file > 8) return false;
-        } else if (char === '/') {
+        } else if (char === "/") {
             if (file !== 8) return false;
             if (--rank < 0) return false;
             file = 0;
         } else return false;
     }
-    return (rank === 0 && file === 8);
+    return rank === 0 && file === 8;
 }
 
-
 /**
- * @param castlingAvailability string representing the castling availability 
+ * @param castlingAvailability string representing the castling availability
  * of a FEN string
  * @returns true if castlingAvailability is a valid castling availability field,
  * false otherwise
@@ -250,8 +275,7 @@ function isValidCastlingAvailability(castlingAvailability: string): boolean {
     const found: string[] = [];
     for (const char of castlingAvailability) {
         if (char === "K" || char === "Q" || char === "k" || char === "q") {
-            for (const foundChar of found)
-                if (foundChar === char) return false;
+            for (const foundChar of found) if (foundChar === char) return false;
             found.push(char);
         } else return false;
     }
@@ -259,8 +283,6 @@ function isValidCastlingAvailability(castlingAvailability: string): boolean {
 }
 
 // -------------------- -------------------- --------------------
-
-
 
 // -------------------- Util functions --------------------
 
@@ -283,12 +305,13 @@ function isPieceSymbol(char: string): boolean {
 }
 
 /**
- * @returns an 8*8 board filled with NONE type pieces, 
+ * @returns an 8*8 board filled with NONE type pieces,
  * or null if NONE piece is not found in the PIECE_POOL
  */
 function getEmptyBoard(): Piece[][] {
-    let nonePiece = PIECE_POOL.getPiece("")
-    if (nonePiece === undefined) nonePiece = new Piece(PieceType.NONE, Color.UNDEFINED);
+    let nonePiece = PIECE_POOL.getPiece("");
+    if (nonePiece === undefined)
+        nonePiece = new Piece(PieceType.NONE, Color.UNDEFINED);
     const pieces: Piece[][] = [];
     for (let i = 0; i < 8; i++) {
         const row: Piece[] = new Array(8).fill(nonePiece);
@@ -320,7 +343,7 @@ export function testFENBoardConversions() {
             failed = true;
         }
     }
-    console.log(`FEN, Board conversions ${(failed) ? "failed" : "passed"}`);
+    console.log(`FEN, Board conversions ${failed ? "failed" : "passed"}`);
 }
 
 // -------------------- -------------------- --------------------
