@@ -11,13 +11,15 @@ type GameProps = {
 
 type GameState = {
     movesList: Move[]
+    currentSelected: Coordinate
 }
 
 
 export default class ChessGame extends Component<GameProps, GameState> {
 
     state: Readonly<GameState> = {
-        movesList: []
+        movesList: [],
+        currentSelected:new Coordinate()
     }
 
     constructor(props: GameProps) {
@@ -26,10 +28,17 @@ export default class ChessGame extends Component<GameProps, GameState> {
     }
 
     clickListener(event: any, index: Coordinate) {
-        const legalMovesOfGivenSquare = this.props.gameObj.getLegalMovesOfGivenSquare(index);
+        if(index.equals(this.state.currentSelected)){
+            this.setState({
+                movesList: [],
+                currentSelected:new Coordinate()
+            })
+        }
+        else{
         this.setState({
-            movesList: legalMovesOfGivenSquare
-        })
+            movesList: this.props.gameObj.getLegalMovesOfGivenSquare(index),
+            currentSelected:index
+        })}
     }
 
     render() {
