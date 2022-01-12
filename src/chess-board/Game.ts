@@ -595,6 +595,9 @@ export default class Game {
 
         //*TODO:7. after making the move check if any castling ability is violated , and update the "castling" attribute of board
 
+        // console.log("for move : ");
+        // console.log(move);
+        // console.log("fen after executing move: ");
         // console.log(boardToFEN(this.board));
 
         return this.board.getNewBoard();
@@ -626,9 +629,8 @@ export default class Game {
         if (!move.wasEnPassant)
             this.board.squares[move.toSquare.x][move.toSquare.y] =
                 move.capturedPiece;
-
         //*3. if move was enPassant , then put the capturedPiece at correct square
-        if (move.wasEnPassant) {
+        else {
             if (move.pieceMoved.pieceColor === Color.WHITE) {
                 this.board.squares[move.toSquare.x - 1][move.toSquare.y] =
                     move.capturedPiece;
@@ -658,6 +660,11 @@ export default class Game {
         //*TODO:6. for castling
 
         //*TODO:7. after making the move check if any castling ability is violated , and update the "castling" attribute of board
+
+        console.log("for move : ");
+        console.log(move);
+        console.log("fen after rolling back move: ");
+        console.log(boardToFEN(this.board));
 
         return this.board.getNewBoard();
     }
