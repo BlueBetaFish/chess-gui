@@ -7,7 +7,7 @@ const PIECE_SYMBOLS = ["k", "q", "r", "b", "n", "p", "K", "Q", "R", "B", "N", "P
 // Default start FEN
 // rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
 
-export const START_BOARD_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+export const START_BOARD_FEN = "n2B4/2P1p3/2P2p2/1P4PK/N7/kB6/pp2Pb2/8 w - - 0 1";
 export const DEFAULT_BOARD = FENToBoard(START_BOARD_FEN);
 
 
