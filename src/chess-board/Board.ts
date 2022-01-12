@@ -42,11 +42,23 @@ export class Board {
         for (let i = 0; i < this.squares.length; i++)
             newSquares[i] = this.squares[i].slice();
 
+        let currentPlayer =
+            this.currentPlayer === Color.WHITE ? Color.WHITE : Color.BLACK;
+        let castling: CastlingAvailability = [
+            this.castling[0],
+            this.castling[1],
+            this.castling[2],
+            this.castling[3],
+        ];
+        let enPassant = this.enPassant
+            ? new Coordinate(this.enPassant.x, this.enPassant.y)
+            : null;
+
         return new Board(
             newSquares,
-            this.currentPlayer,
-            this.castling,
-            this.enPassant,
+            currentPlayer,
+            castling,
+            enPassant,
             this.halfMoveClock,
             this.fullMove
         );
