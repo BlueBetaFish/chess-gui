@@ -316,6 +316,11 @@ export class Board {
         //*check kingSide Castling
         if (isKingSideCastlingPossible) {
             for (const inBetweenSquare of kingSideInBetweenSquares) {
+                if (this.isSquareEmpty(inBetweenSquare)) {
+                    isKingSideCastlingPossible = false;
+                    break;
+                }
+
                 for (const squareAttackedByOpponent of squaresAttackedByOpponent) {
                     if (squareAttackedByOpponent.equals(inBetweenSquare)) {
                         isKingSideCastlingPossible = false;
@@ -342,6 +347,11 @@ export class Board {
         //*check queen Castling
         if (isQueenSideCastlingPossible) {
             for (const inBetweenSquare of queenSideInBetweenSquares) {
+                if (this.isSquareEmpty(inBetweenSquare)) {
+                    isQueenSideCastlingPossible = false;
+                    break;
+                }
+
                 for (const squareAttackedByOpponent of squaresAttackedByOpponent) {
                     if (squareAttackedByOpponent.equals(inBetweenSquare)) {
                         isQueenSideCastlingPossible = false;
