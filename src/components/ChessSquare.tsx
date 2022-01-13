@@ -9,6 +9,8 @@ type Props = {
     index: Coordinate,
     colorIndex: Coordinate,
     boardClickListener: any,
+    boardDropListener: any,
+    boardDragStartListener: any,
     showMoveIndicator: boolean,
     theme?: string
 }
@@ -76,10 +78,19 @@ export default function ChessGrid(props: Props) {
 
 
     return (
-        <div className={[styles.grid, (isLightSquare()) ? styles.light : styles.dark].join(' ')} onClick={(event) => { props.boardClickListener(event, props.index) }}>
+        <div className={
+            [styles.grid, (isLightSquare()) ? styles.light : styles.dark].join(' ')} 
+            onClick={(event) => { props.boardClickListener(event, props.index) }} 
+            onDrop={(event: any)=>{props.boardDropListener(event, props.index)}}
+            onDragOver={(event: any)=>{event.preventDefault()}} >
             {
                 (props.piece.pieceColor !== Color.UNDEFINED) ?
-                    <img src={getImageSrc(props.piece.pieceType, props.piece.pieceColor)} />
+                    <img 
+                    id={props.piece.pieceType+props.piece.pieceColor+props.index.x+props.index.y}
+                    src={getImageSrc(props.piece.pieceType, props.piece.pieceColor)}
+                    draggable={true}
+                    onDragStart={(event:any)=>{props.boardDragStartListener(event,props.index)}}
+                     />
                     : (<></>)
 
             }

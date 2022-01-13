@@ -1,6 +1,6 @@
 import { Component } from 'react'
 import { Board } from '../chess-board/Board';
-import ChessGrid from './ChessSquare';
+import ChessSquare from './ChessSquare';
 import styles from '../styles/ChessBoard.module.css'
 import { Coordinate, getIndexinMoveList } from '../chess-board/chessUtility'
 import Move from '../chess-board/Move';
@@ -10,6 +10,8 @@ type BoardProps = {
     boardObj: Board | null,
     showMoveinSquare: Move[],
     gameClickListener: any,
+    gameDropListener:any,
+    gameDragOverListener: any,
     flipBoard?: boolean
 }
 
@@ -34,12 +36,14 @@ export default class ChessBoard extends Component<BoardProps, BoardState> {
                                     rank.reverse().map((piece, fileNum) => {
                                         const index = new Coordinate((rankNum), (7 - fileNum));
                                         return (
-                                            <ChessGrid
+                                            <ChessSquare
                                                 piece={piece}
                                                 key={rankNum * rank.length + fileNum}
                                                 index={index}
                                                 colorIndex={new Coordinate(rankNum, fileNum)}
                                                 boardClickListener={this.props.gameClickListener}
+                                                boardDragStartListener={this.props.gameDropListener}
+                                                boardDropListener={this.props.gameDragOverListener}
                                                 showMoveIndicator={getIndexinMoveList(index,this.props.showMoveinSquare)!==undefined}
                                             />)
                                     })
@@ -55,12 +59,14 @@ export default class ChessBoard extends Component<BoardProps, BoardState> {
                                     rank.map((piece, fileNum) => {
                                         const index = new Coordinate((7 - rankNum), (fileNum));
                                         return (
-                                            <ChessGrid
+                                            <ChessSquare
                                                 piece={piece}
                                                 key={rankNum * rank.length + fileNum}
                                                 index={index}
                                                 colorIndex={new Coordinate(rankNum, fileNum)}
                                                 boardClickListener={this.props.gameClickListener}
+                                                boardDragStartListener={this.props.gameDropListener}
+                                                boardDropListener={this.props.gameDragOverListener}
                                                 showMoveIndicator={getIndexinMoveList(index,this.props.showMoveinSquare)!==undefined}
 
                                             />)

@@ -29,6 +29,8 @@ export default class ChessGame extends Component<GameProps, GameState> {
     constructor(props: GameProps) {
         super(props)
         this.clickListener = this.clickListener.bind(this);
+        this.dropListener = this.dropListener.bind(this);
+        this.dragStartListener = this.dragStartListener.bind(this);
     }
 
     clickListener(event: any, index: Coordinate) {
@@ -41,7 +43,7 @@ export default class ChessGame extends Component<GameProps, GameState> {
         }
         else if(move!==undefined){
             console.log("Move excuted")
-            this.props.gameObj.executeMoveAndMutateGame(move)
+            this.props.gameObj.executeMoveAndMutateGame(move);
             this.setState({
                 gameBoard:this.props.gameObj.board,
                 movesList: [],
@@ -52,6 +54,28 @@ export default class ChessGame extends Component<GameProps, GameState> {
                 movesList: this.props.gameObj.getLegalMovesOfGivenSquare(index),
                 currentSelected:index
             })
+        }
+    }
+
+    dragStartListener(event: any, index: Coordinate) {
+       
+        this.setState({
+            movesList: this.props.gameObj.getLegalMovesOfGivenSquare(index),
+            currentSelected:index
+        })
+    }
+
+    dropListener(event: any, index: Coordinate) {
+        const move = getIndexinMoveList(index,this.state.movesList);
+
+        if(move!==undefined){
+            this.props.gameObj.executeMoveAndMutateGame(move);
+
+                this.setState({
+                    gameBoard:this.props.gameObj.board,
+                    movesList: [],
+                    currentSelected:new Coordinate()
+                })
         }
     }
 
@@ -69,7 +93,13 @@ export default class ChessGame extends Component<GameProps, GameState> {
     render() {
         return (
             <div>
-                <ChessBoard boardObj={this.state.gameBoard} gameClickListener={this.clickListener} showMoveinSquare={this.state.movesList} flipBoard={this.props.flipGame} />
+                <ChessBoard 
+                    boardObj={this.state.gameBoard} 
+                    gameClickListener={this.clickListener}
+                    gameDropListener={this.dragStartListener}
+                    gameDragOverListener={this.dropListener} 
+                    showMoveinSquare={this.state.movesList} 
+                    flipBoard={this.props.flipGame} />
             </div>
         )
     }
