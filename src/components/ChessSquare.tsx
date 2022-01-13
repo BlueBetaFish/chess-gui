@@ -71,12 +71,7 @@ export default function ChessGrid(props: Props) {
 
     function isLightSquare(): boolean {
         const { x, y } = props.colorIndex;
-        if (x % 2 === 0) {
-            return (y % 2 === 0)
-        }
-        else {
-            return (y % 2 !== 0)
-        }
+        return ((x+y)%2===0)
     }
 
 

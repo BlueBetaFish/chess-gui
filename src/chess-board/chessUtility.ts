@@ -1,3 +1,5 @@
+import Move from "./Move";
+
 export class Coordinate {
     x: number;
     y: number;
@@ -69,4 +71,19 @@ export function getAlgebricCoordinateFromIndices(
     let file = String.fromCharCode("a".charCodeAt(0) + indices.y);
 
     return `${file}${rank}`;
+}
+
+/**
+ * 
+ * @param index (eg : {x : 1, y : 1})
+ * @param moveList Array of Moves Class
+ * @returns true if index Coordinate is present in moveList.toSquare Array
+ */
+
+export function isIndexinMoveList(index:Coordinate,moveList:Move[]):boolean{
+    return (
+        moveList.find(move =>
+            move.toSquare.x === index.x &&
+            move.toSquare.y === index.y
+        ) !== undefined)
 }
