@@ -13,6 +13,13 @@ function App() {
         <div className="App">
             <ChessGame gameObj={gameObj} flipGame={flip} />
             <form>
+                    <input
+                        type="text"
+                        name="fen"
+                        onChange={(event) => {
+                            setFormValue(event.target.value);
+                        }}
+                    />
                 <button
                     type="button"
                     onClick={() => {
