@@ -27,6 +27,7 @@ export class Board {
     boardSize: number;
     squares: Piece[][];
     currentPlayer: Color;
+    //CastlingAvailability Convention : [WhiteKingSide, WhiteQueenSide, BlackKingSide, BlackQueenSide]
     castling: CastlingAvailability;
     enPassant: Coordinate | null;
     halfMoveClock: number;
@@ -239,6 +240,7 @@ export class Board {
         return moves;
     }
 
+    //*Gets the pseudo legal moves of opponent exluding castling moves
     private getOpponentPseudoLegalMoves(): Move[] {
         let newBoard = this.getNewBoard();
 
@@ -352,20 +354,26 @@ export class Board {
 
         //*check queen Castling
         if (isQueenSideCastlingPossible) {
-            for (const inBetweenSquare of queenSideInBetweenSquares) {
-                if (!this.isSquareEmpty(inBetweenSquare)) {
-                    isQueenSideCastlingPossible = false;
-                    break;
-                }
-
-                for (const squareAttackedByOpponent of squaresAttackedByOpponent) {
-                    if (squareAttackedByOpponent.equals(inBetweenSquare)) {
+            //*__________________________________________________________________________________________
+            //*IMPORTANT : check if the extra square of knight's position is empty or not. It was not included in "queenSideInBetweenSquares" .
+            //*__________________________________________________________________________________________
+            if (!this.isSquareEmpty(new Coordinate(currentPlayerKingCoordinate.x, 1))) {
+                isQueenSideCastlingPossible = false;
+            } else {
+                for (const inBetweenSquare of queenSideInBetweenSquares) {
+                    if (!this.isSquareEmpty(inBetweenSquare)) {
                         isQueenSideCastlingPossible = false;
                         break;
                     }
+
+                    for (const squareAttackedByOpponent of squaresAttackedByOpponent) {
+                        if (squareAttackedByOpponent.equals(inBetweenSquare)) {
+                            isQueenSideCastlingPossible = false;
+                            break;
+                        }
+                    }
                 }
             }
-
             if (isQueenSideCastlingPossible) {
                 moves.push(
                     new Move(
