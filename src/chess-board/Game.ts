@@ -287,5 +287,7 @@ export default class Game {
 
     executeMoveAndMutateGame(move: Move) {
         this.board = this.getNewBoardAfterExecutingMove(move);
+
+        //*add move to moveHistory
     }
 }
