@@ -4,10 +4,11 @@ import Piece, { Color, PIECE_POOL, PieceType } from "./Pieces";
 
 const PIECE_SYMBOLS = ["k", "q", "r", "b", "n", "p", "K", "Q", "R", "B", "N", "P"];
 
-// Default start FEN
-// rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
+//
+// Default start FEN :  rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
 //4Q3/3PrNBb/p24r/KpP1P3/3pqPk1/p1pP4/p5pp/1r1R4 w - b6 0 1
 //castling bog : r3kb1r/1pp2pp1/p4n1p/1q1pNb2/5B2/P1N1P3/1PPQ1PPP/R3K2R w KQkq - 0 1
+//castling bog : rn2kbnr/ppp1pppp/3q4/3p4/3P2b1/3Q1N1P/PPP1PPP1/RNB1KB1R b KQkq - 0 1 (caslting with inbetween pieces)
 
 export const START_BOARD_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 export const DEFAULT_BOARD = FENToBoard(START_BOARD_FEN);

@@ -52,11 +52,8 @@ export default class Game {
 
         //*TODO:-2. Update halfMoveClock and fullMove attributes of board
 
-        //*-1. Change currentPlayer
-        newBoard.currentPlayer = newBoard.currentPlayer === Color.WHITE ? Color.BLACK : Color.WHITE;
-
-        //*0.Add move to moveHistory
-        this.moveHistory.push(move);
+        // //*0.Add move to moveHistory
+        // this.moveHistory.push(move); //dont add move in movehistory inside this function
 
         //*1.make the fromSquare empty
         newBoard.squares[move.fromSquare.x][move.fromSquare.y] = this.getEmptySquare();
@@ -88,19 +85,83 @@ export default class Game {
 
         //*TODO:5. for promotion
 
-        //*TODO:6. for castling
+        //*TODO:6. for castling : remove the rook from its initial position and put it in castled position
+        if (move.wasCastle) {
+            // console.log("executing castling move: for fen : " + boardToFEN(this.board));
+            // console.log("move : ");
+            // console.log(move);
+
+            //*move the rook to the required square
+            let rookInitialCoordinate;
+            let rookTargetCoordinate;
+
+            //*for king side castling
+            if (move.toSquare.y === 6) {
+                rookInitialCoordinate = new Coordinate(move.toSquare.x, newBoard.boardSize - 1);
+                rookTargetCoordinate = new Coordinate(move.toSquare.x, move.toSquare.y - 1);
+            }
+            //*for queen side castling
+            else if (move.toSquare.y === 2) {
+                rookInitialCoordinate = new Coordinate(move.toSquare.x, 0);
+                rookTargetCoordinate = new Coordinate(move.toSquare.x, move.toSquare.y + 1);
+            }
+
+            //*put the rook at its correct position
+            if (rookInitialCoordinate && rookTargetCoordinate) {
+                newBoard.squares[rookTargetCoordinate.x][rookTargetCoordinate.y] = newBoard.squares[rookInitialCoordinate.x][rookInitialCoordinate.y];
+                newBoard.squares[rookInitialCoordinate.x][rookInitialCoordinate.y] = this.getEmptySquare();
+            }
+        }
 
         //*TODO:7. after making the move check if any castling ability is violated , and update the "castling" attribute of board
+        //*for white
+        if (newBoard.currentPlayer === Color.WHITE) {
+            if (move.pieceMoved.isPieceType(PieceType.KING)) {
+                newBoard.castling[0] = newBoard.castling[1] = false;
+            } else {
+                //*--------------------------------------------for king side----------------------------------------------------------------
+                //*if currentPlayer moves rook
+                if (move.fromSquare.equals(new Coordinate(0, newBoard.boardSize - 1))) newBoard.castling[0] = false;
 
-        // console.log("for move : ");
-        // console.log(move);
-        // console.log("fen after executing move: ");
-        // console.log(boardToFEN(newBoard));
+                //*if i capture opponent's rook
+                if (move.toSquare.equals(new Coordinate(newBoard.boardSize - 1, newBoard.boardSize - 1))) newBoard.castling[2] = false;
+
+                //*--------------------------------------------for queen side----------------------------------------------------------------
+                //*if currentPlayer moves rook
+                if (move.fromSquare.equals(new Coordinate(0, 0))) newBoard.castling[1] = false;
+
+                //*if i capture opponent's rook
+                if (move.toSquare.equals(new Coordinate(newBoard.boardSize - 1, 0))) newBoard.castling[3] = false;
+            }
+        }
+        //*for black
+        else {
+            if (move.pieceMoved.isPieceType(PieceType.KING)) {
+                newBoard.castling[2] = newBoard.castling[3] = false;
+            } else {
+                //*--------------------------------------------for king side----------------------------------------------------------------
+                //*if currentPlayer moves rook
+                if (move.fromSquare.equals(new Coordinate(newBoard.boardSize - 1, newBoard.boardSize - 1))) newBoard.castling[2] = false;
+
+                //*if i capture opponent's rook
+                if (move.toSquare.equals(new Coordinate(0, newBoard.boardSize - 1))) newBoard.castling[0] = false;
+
+                //*--------------------------------------------for queen side----------------------------------------------------------------
+                //*if currentPlayer moves rook
+                if (move.fromSquare.equals(new Coordinate(newBoard.boardSize - 1, 0))) newBoard.castling[3] = false;
+
+                //*if i capture opponent's rook
+                if (move.toSquare.equals(new Coordinate(0, 0))) newBoard.castling[1] = false;
+            }
+        }
+
+        //*-1. Change currentPlayer
+        newBoard.currentPlayer = newBoard.currentPlayer === Color.WHITE ? Color.BLACK : Color.WHITE;
 
         return newBoard;
     }
 
-    //*TODO:
+    //*TODO: requires testing
     //*rolls back the last move of this.board, and returns new board (i mean old board before that move) , without mutating the this.board , returns null if something goes wrong
     rollBackLastMove(): Board | null {
         //to satisfy the null value of this.board
@@ -158,11 +219,6 @@ export default class Game {
         //*TODO:6. for castling
 
         //*TODO:7. after making the move check if any castling ability is violated , and update the "castling" attribute of board
-
-        // console.log("for move : ");
-        // console.log(move);
-        // console.log("fen after rolling back move: ");
-        // console.log(boardToFEN(newBoard));
 
         return newBoard;
     }
@@ -235,17 +291,6 @@ export default class Game {
 
                         //if any of the opponent's pseudo legal moves can capture the current player's king
                         for (const opponentPseudoLegalMove of opponentPseudoLegalMoves) {
-                            // console.log(
-                            //     "opponentPseudoLegalMove : pieceType = " +
-                            //         opponentPseudoLegalMove.pieceMoved
-                            //             .pieceType +
-                            //         " , toSquare : (" +
-                            //         opponentPseudoLegalMove.toSquare.x +
-                            //         ", " +
-                            //         opponentPseudoLegalMove.toSquare.y +
-                            //         " ) "
-                            // );
-
                             if (opponentPseudoLegalMove.toSquare.equals(newKingCoordinate)) {
                                 // console.log("king can be captured");
 
@@ -266,33 +311,13 @@ export default class Game {
             // this.rollBackLastMove();
         }
 
-        //*for testing purpose
-        // console.log("pseudoLegal moves : ");
-        // console.log(pseudoLegalMoves);
-
-        // console.log("legal moves : ");
-        // console.log(legalMoves);
-
-        // let discardedMoves: Move[] = [];
-        // for (const pseudoLegalMove of pseudoLegalMoves) {
-        //     let currMoveIsDiscarded = true;
-        //     for (const legalMove of legalMoves) {
-        //         if (pseudoLegalMove.equals(legalMove)) {
-        //             currMoveIsDiscarded = false;
-        //             break;
-        //         }
-        //     }
-        //     if (currMoveIsDiscarded) discardedMoves.push(pseudoLegalMove);
-        // }
-        // console.log("discarded Moves : ");
-        // console.log(discardedMoves);
-
         return legalMoves;
     }
 
     executeMoveAndMutateGame(move: Move) {
         this.board = this.getNewBoardAfterExecutingMove(move);
 
+        this.moveHistory.push(move);
         //*add move to moveHistory
     }
 }
