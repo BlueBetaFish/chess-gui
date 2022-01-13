@@ -83,7 +83,6 @@ export function getAlgebricCoordinateFromIndices(
 export function isIndexinMoveList(index:Coordinate,moveList:Move[]):boolean{
     return (
         moveList.find(move =>
-            move.toSquare.x === index.x &&
-            move.toSquare.y === index.y
+            move.toSquare.equals(index)
         ) !== undefined)
 }
