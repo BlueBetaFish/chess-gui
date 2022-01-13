@@ -264,7 +264,7 @@ export class Board {
     }
 
     private getKingCastlingMoves(): Move[] {
-        console.log("getkingCastlingMoves called for fen : " + boardToFEN(this));
+        // console.log("getkingCastlingMoves called for fen : " + boardToFEN(this));
 
         let isKingSideCastlingPossible: boolean, isQueenSideCastlingPossible: boolean;
         let kingSideRookCoordinate: Coordinate, queenSideRookCoordinate: Coordinate;
