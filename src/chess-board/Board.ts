@@ -4,6 +4,7 @@
 */
 
 import { Coordinate } from "./chessUtility";
+import { boardToFEN } from "./FEN";
 import Move from "./Move";
 import Piece, { Color, PieceType } from "./Pieces";
 
@@ -261,6 +262,8 @@ export class Board {
     }
 
     private getKingCastlingMoves(): Move[] {
+        console.log("getkingCastlingMoves called for fen : " + boardToFEN(this));
+
         let isKingSideCastlingPossible: boolean, isQueenSideCastlingPossible: boolean;
         let kingSideRookCoordinate: Coordinate, queenSideRookCoordinate: Coordinate;
         let kingSideInBetweenSquares: Coordinate[], queenSideInBetweenSquares: Coordinate[]; //*squares between king and rook
@@ -306,6 +309,9 @@ export class Board {
         //*get squares attacked by opponent
         const squaresAttackedByOpponent: Coordinate[] = this.getOpponentPseudoLegalMoves().map((move) => move.toSquare);
 
+        // console.log("squares attacked by opponent : ");
+        // console.log(squaresAttackedByOpponent);
+
         //*if king is in check
         for (const squareAttackedByOpponent of squaresAttackedByOpponent) {
             if (squareAttackedByOpponent.equals(currentPlayerKingCoordinate)) return [];
@@ -316,7 +322,7 @@ export class Board {
         //*check kingSide Castling
         if (isKingSideCastlingPossible) {
             for (const inBetweenSquare of kingSideInBetweenSquares) {
-                if (this.isSquareEmpty(inBetweenSquare)) {
+                if (!this.isSquareEmpty(inBetweenSquare)) {
                     isKingSideCastlingPossible = false;
                     break;
                 }
@@ -329,7 +335,7 @@ export class Board {
                 }
             }
 
-            if (kingSideInBetweenSquares) {
+            if (isKingSideCastlingPossible) {
                 moves.push(
                     new Move(
                         currentPlayerKingCoordinate,
@@ -347,7 +353,7 @@ export class Board {
         //*check queen Castling
         if (isQueenSideCastlingPossible) {
             for (const inBetweenSquare of queenSideInBetweenSquares) {
-                if (this.isSquareEmpty(inBetweenSquare)) {
+                if (!this.isSquareEmpty(inBetweenSquare)) {
                     isQueenSideCastlingPossible = false;
                     break;
                 }
