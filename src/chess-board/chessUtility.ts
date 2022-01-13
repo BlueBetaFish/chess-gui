@@ -77,12 +77,13 @@ export function getAlgebricCoordinateFromIndices(
  * 
  * @param index (eg : {x : 1, y : 1})
  * @param moveList Array of Moves Class
- * @returns true if index Coordinate is present in moveList.toSquare Array
+ * @returnval if (index Coordinate is present in moveList.toSquare Array)   ==> the move
+ * @returnval else                                                          ==> undefined 
  */
 
-export function isIndexinMoveList(index:Coordinate,moveList:Move[]):boolean{
+export function getIndexinMoveList(index:Coordinate,moveList:Move[]):Move|undefined{
     return (
         moveList.find(move =>
             move.toSquare.equals(index)
-        ) !== undefined)
+        ))
 }
