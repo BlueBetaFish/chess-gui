@@ -6,27 +6,17 @@ import ChessGame from "./components/ChessGame";
 
 function App() {
     const [flip, setFlip] = useState(false);
-    const [fen, setFen] = useState(START_BOARD_FEN);
-    const [fromValue, setFromValue] = useState("");
+    const [formValue, setFormValue] = useState("");
+    const [gameObj,setGameObj]=useState(new Game(START_BOARD_FEN));
 
     return (
         <div className="App">
-            <ChessGame gameObj={new Game(fen)} flipGame={flip} />
+            <ChessGame gameObj={gameObj} flipGame={flip} />
             <form>
-                <label>
-                    Name:
-                    <input
-                        type="text"
-                        name="fen"
-                        onChange={(event) => {
-                            setFromValue(event.target.value);
-                        }}
-                    />
-                </label>
                 <button
                     type="button"
                     onClick={() => {
-                        setFen(fromValue);
+                        setGameObj(new Game(formValue))
                     }}
                 >
                     Update Game

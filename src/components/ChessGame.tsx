@@ -42,7 +42,6 @@ export default class ChessGame extends Component<GameProps, GameState> {
             const move =  this.state.movesList.find(move=> move.toSquare.equals(index))
             // console.log(move)
             
-            if(this.props.gameObj.board) console.log(boardToFEN(this.props.gameObj.board))
             if(move!==undefined) {
                 console.log("Move excuted")
                 this.props.gameObj.executeMoveAndMutateGame(move)
@@ -51,13 +50,23 @@ export default class ChessGame extends Component<GameProps, GameState> {
                     movesList: [],
                 })
             }
-            if(this.props.gameObj.board) console.log(boardToFEN(this.props.gameObj.board))
         }
         else{
         this.setState({
             movesList: this.props.gameObj.getLegalMovesOfGivenSquare(index),
             currentSelected:index
         })}
+    }
+
+
+    componentDidUpdate(prevProps:GameProps) {
+       if(prevProps.gameObj!== this.props.gameObj){
+           console.log("gameObj Changed")
+           this.setState({
+               gameBoard: this.props.gameObj.board,
+               movesList: [],
+           })
+       }
     }
 
     render() {
