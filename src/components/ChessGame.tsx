@@ -42,7 +42,6 @@ export default class ChessGame extends Component<GameProps, GameState> {
             })
         }
         else if(move!==undefined){
-            console.log("Move excuted")
             this.props.gameObj.executeMoveAndMutateGame(move);
             this.setState({
                 gameBoard:this.props.gameObj.board,
@@ -82,7 +81,6 @@ export default class ChessGame extends Component<GameProps, GameState> {
 
     componentDidUpdate(prevProps:GameProps) {
        if(prevProps.gameObj!== this.props.gameObj){
-           console.log("gameObj Changed")
            this.setState({
                gameBoard: this.props.gameObj.board,
                movesList: [],
