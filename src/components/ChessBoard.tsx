@@ -2,7 +2,7 @@ import { Component } from 'react'
 import { Board } from '../chess-board/Board';
 import ChessGrid from './ChessSquare';
 import styles from '../styles/ChessBoard.module.css'
-import { Coordinate } from '../chess-board/chessUtility'
+import { Coordinate, isIndexinMoveList } from '../chess-board/chessUtility'
 import Move from '../chess-board/Move';
 
 
@@ -20,15 +20,6 @@ type BoardState = {
 
 
 export default class ChessBoard extends Component<BoardProps, BoardState> {
-
-
-    showMoveIndicator(index: Coordinate) {
-        return (
-            this.props.showMoveinSquare.find(move =>
-                move.toSquare.x === index.x &&
-                move.toSquare.y === index.y
-            ) !== undefined)
-    }
 
 
     render() {
@@ -49,7 +40,7 @@ export default class ChessBoard extends Component<BoardProps, BoardState> {
                                                 index={index}
                                                 colorIndex={new Coordinate(rankNum, fileNum)}
                                                 boardClickListener={this.props.gameClickListener}
-                                                showMoveIndicator={this.showMoveIndicator(index)}
+                                                showMoveIndicator={isIndexinMoveList(index,this.props.showMoveinSquare)}
                                             />)
                                     })
                                 }
@@ -70,7 +61,7 @@ export default class ChessBoard extends Component<BoardProps, BoardState> {
                                                 index={index}
                                                 colorIndex={new Coordinate(rankNum, fileNum)}
                                                 boardClickListener={this.props.gameClickListener}
-                                                showMoveIndicator={this.showMoveIndicator(index)}
+                                                showMoveIndicator={isIndexinMoveList(index,this.props.showMoveinSquare)}
 
                                             />)
                                     }
