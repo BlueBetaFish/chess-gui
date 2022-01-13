@@ -53,15 +53,13 @@ export default class Game {
         //*TODO:-2. Update halfMoveClock and fullMove attributes of board
 
         //*-1. Change currentPlayer
-        newBoard.currentPlayer =
-            newBoard.currentPlayer === Color.WHITE ? Color.BLACK : Color.WHITE;
+        newBoard.currentPlayer = newBoard.currentPlayer === Color.WHITE ? Color.BLACK : Color.WHITE;
 
         //*0.Add move to moveHistory
         this.moveHistory.push(move);
 
         //*1.make the fromSquare empty
-        newBoard.squares[move.fromSquare.x][move.fromSquare.y] =
-            this.getEmptySquare();
+        newBoard.squares[move.fromSquare.x][move.fromSquare.y] = this.getEmptySquare();
 
         //*2.put the moved piece at targetSquare
         newBoard.squares[move.toSquare.x][move.toSquare.y] = move.pieceMoved;
@@ -72,36 +70,20 @@ export default class Game {
          */
         if (move.wasEnPassant) {
             if (move.pieceMoved.pieceColor === Color.WHITE) {
-                newBoard.squares[move.toSquare.x - 1][move.toSquare.y] =
-                    this.getEmptySquare();
+                newBoard.squares[move.toSquare.x - 1][move.toSquare.y] = this.getEmptySquare();
             } else if (move.pieceMoved.pieceColor === Color.BLACK) {
-                newBoard.squares[move.toSquare.x + 1][move.toSquare.y] =
-                    this.getEmptySquare();
+                newBoard.squares[move.toSquare.x + 1][move.toSquare.y] = this.getEmptySquare();
             }
         }
 
         //*4. after making the move check if it a pawn moved 2 steps, if yes , then update the enPassant Coordinate attribute of board
         if (move.pieceMoved.isPieceType(PieceType.PAWN)) {
             //if white pawn moved from 2nd rank to 4th rank
-            if (
-                move.fromSquare.x === 1 &&
-                move.toSquare.x === 3 &&
-                move.pieceMoved.pieceColor === Color.WHITE
-            )
-                newBoard.enPassant = new Coordinate(
-                    move.fromSquare.x + 1,
-                    move.fromSquare.y
-                );
+            if (move.fromSquare.x === 1 && move.toSquare.x === 3 && move.pieceMoved.pieceColor === Color.WHITE)
+                newBoard.enPassant = new Coordinate(move.fromSquare.x + 1, move.fromSquare.y);
             //if black pawn moved from 7th rank to 5th rank
-            else if (
-                move.fromSquare.x === 6 &&
-                move.toSquare.x === 4 &&
-                move.pieceMoved.pieceColor === Color.BLACK
-            )
-                newBoard.enPassant = new Coordinate(
-                    move.fromSquare.x - 1,
-                    move.fromSquare.y
-                );
+            else if (move.fromSquare.x === 6 && move.toSquare.x === 4 && move.pieceMoved.pieceColor === Color.BLACK)
+                newBoard.enPassant = new Coordinate(move.fromSquare.x - 1, move.fromSquare.y);
         }
 
         //*TODO:5. for promotion
@@ -136,40 +118,27 @@ export default class Game {
         //*TODO:-2. Update halfMoveClock and fullMove attributes of board
 
         //*-1. Change currentPlayer
-        newBoard.currentPlayer =
-            newBoard.currentPlayer === Color.WHITE ? Color.BLACK : Color.WHITE;
+        newBoard.currentPlayer = newBoard.currentPlayer === Color.WHITE ? Color.BLACK : Color.WHITE;
 
         //*1.put the moved piece at fromSquare
-        newBoard.squares[move.fromSquare.x][move.fromSquare.y] =
-            move.pieceMoved;
+        newBoard.squares[move.fromSquare.x][move.fromSquare.y] = move.pieceMoved;
 
         //*make the toSquare empty first, later put capturedPiece if the move was not enPassant --> without making the toSquare empty at first, code was producing bog :)
-        newBoard.squares[move.toSquare.x][move.toSquare.y] =
-            this.getEmptySquare();
+        newBoard.squares[move.toSquare.x][move.toSquare.y] = this.getEmptySquare();
 
         //*2.put the captured piece at targetSquare if the move was not enPassant
-        if (!move.wasEnPassant)
-            newBoard.squares[move.toSquare.x][move.toSquare.y] =
-                move.capturedPiece;
+        if (!move.wasEnPassant) newBoard.squares[move.toSquare.x][move.toSquare.y] = move.capturedPiece;
 
         //*3. if we roll back enPassant , then put the capturedPiece at correct square, and set the enPassant attribute of board
         if (move.wasEnPassant) {
             if (move.pieceMoved.pieceColor === Color.WHITE) {
-                newBoard.squares[move.toSquare.x - 1][move.toSquare.y] =
-                    move.capturedPiece;
+                newBoard.squares[move.toSquare.x - 1][move.toSquare.y] = move.capturedPiece;
 
-                newBoard.enPassant = new Coordinate(
-                    move.toSquare.x,
-                    move.toSquare.y
-                );
+                newBoard.enPassant = new Coordinate(move.toSquare.x, move.toSquare.y);
             } else if (move.pieceMoved.pieceColor === Color.BLACK) {
-                newBoard.squares[move.toSquare.x + 1][move.toSquare.y] =
-                    move.capturedPiece;
+                newBoard.squares[move.toSquare.x + 1][move.toSquare.y] = move.capturedPiece;
 
-                newBoard.enPassant = new Coordinate(
-                    move.toSquare.x,
-                    move.toSquare.y
-                );
+                newBoard.enPassant = new Coordinate(move.toSquare.x, move.toSquare.y);
             }
         }
 
@@ -178,12 +147,8 @@ export default class Game {
             //if white pawn moved from 2nd rank to 4th rank ,or black pawn moved from 7th rank to 5th rank
 
             if (
-                (move.fromSquare.x === 1 &&
-                    move.toSquare.x === 3 &&
-                    move.pieceMoved.pieceColor === Color.WHITE) ||
-                (move.fromSquare.x === 6 &&
-                    move.toSquare.x === 4 &&
-                    move.pieceMoved.pieceColor === Color.BLACK)
+                (move.fromSquare.x === 1 && move.toSquare.x === 3 && move.pieceMoved.pieceColor === Color.WHITE) ||
+                (move.fromSquare.x === 6 && move.toSquare.x === 4 && move.pieceMoved.pieceColor === Color.BLACK)
             )
                 newBoard.enPassant = null;
         }
@@ -216,6 +181,8 @@ export default class Game {
         if (!this.board.isCoordinateSafe(fromSquare)) return [];
 
         const currentPlayer = this.board?.currentPlayer;
+        const opponentPlayer = currentPlayer === Color.WHITE ? Color.BLACK : Color.WHITE;
+
         let currentPlayerKingCoordinate: Coordinate = new Coordinate(-1, -1);
 
         let n = this.board?.boardSize ? this.board.boardSize : -100;
@@ -223,10 +190,7 @@ export default class Game {
         //*get king coordinate of current player
         for (let i = 0; i < n; i++) {
             for (let j = 0; j < n; j++) {
-                if (
-                    this.board.squares[i][j].isPieceType(PieceType.KING) &&
-                    this.board.squares[i][j].pieceColor === currentPlayer
-                ) {
+                if (this.board.squares[i][j].isPieceType(PieceType.KING) && this.board.squares[i][j].pieceColor === currentPlayer) {
                     currentPlayerKingCoordinate = new Coordinate(i, j);
                     break;
                 }
@@ -234,27 +198,23 @@ export default class Game {
         }
 
         let legalMoves: Move[] = [];
-        let pseudoLegalMoves =
-            this.board.getPseudoLegalMovesOfGivenSquare(fromSquare);
-
-        // console.log(
-        //     `king coordinate : (${currentPlayerKingCoordinate.x} , ${currentPlayerKingCoordinate.y})`
-        // );
-
-        // console.log("pseudo legal moves : ");
-        // console.log(pseudoLegalMoves);
-        // // return pseudoLegalMoves;
+        let pseudoLegalMoves = this.board.getPseudoLegalMovesOfGivenSquare(fromSquare);
 
         /*
             for each pseudo legal moves, execute the move and check if after executig the pseudo legal move any of the oponent's pieces can capture
             my king or not , if no , then include the pseudoLegalMove in legalmoves list
         */
         for (const pseudoLegalMove of pseudoLegalMoves) {
+            //*check if using the pseudoLegalMove i can capture opponent's king
+            if (pseudoLegalMove.capturedPiece && pseudoLegalMove.capturedPiece.isPieceType(PieceType.KING) && pseudoLegalMove.capturedPiece.pieceColor === opponentPlayer) {
+                legalMoves.push(pseudoLegalMove);
+                continue;
+            }
+
             let newKingCoordinate = currentPlayerKingCoordinate;
 
             //*check if the king's coordinate is changed
-            if (pseudoLegalMove.pieceMoved.isPieceType(PieceType.KING))
-                newKingCoordinate = pseudoLegalMove.toSquare;
+            if (pseudoLegalMove.pieceMoved.isPieceType(PieceType.KING)) newKingCoordinate = pseudoLegalMove.toSquare;
 
             //*execute the psuedo legal move (Remember : Dont mutate the this.board)
             let newBoard = this.getNewBoardAfterExecutingMove(pseudoLegalMove);
@@ -265,14 +225,8 @@ export default class Game {
             for (let i = 0; i < n; i++) {
                 for (let j = 0; j < n; j++) {
                     let opponentPiece = newBoard?.squares[i][j];
-                    if (
-                        !newBoard?.isSquareEmpty(new Coordinate(i, j)) &&
-                        opponentPiece?.pieceColor !== currentPlayer
-                    ) {
-                        let opponentPseudoLegalMoves =
-                            newBoard?.getPseudoLegalMovesOfGivenSquare(
-                                new Coordinate(i, j)
-                            );
+                    if (!newBoard?.isSquareEmpty(new Coordinate(i, j)) && opponentPiece?.pieceColor !== currentPlayer) {
+                        let opponentPseudoLegalMoves = newBoard?.getPseudoLegalMovesOfGivenSquare(new Coordinate(i, j));
 
                         //if any of the opponent's pseudo legal moves can capture the current player's king
                         for (const opponentPseudoLegalMove of opponentPseudoLegalMoves) {
@@ -287,11 +241,7 @@ export default class Game {
                             //         " ) "
                             // );
 
-                            if (
-                                opponentPseudoLegalMove.toSquare.equals(
-                                    newKingCoordinate
-                                )
-                            ) {
+                            if (opponentPseudoLegalMove.toSquare.equals(newKingCoordinate)) {
                                 // console.log("king can be captured");
 
                                 kingCanBeCaptured = true;
@@ -333,5 +283,9 @@ export default class Game {
         // console.log(discardedMoves);
 
         return legalMoves;
+    }
+
+    executeMoveAndMutateGame(move: Move) {
+        this.board = this.getNewBoardAfterExecutingMove(move);
     }
 }
