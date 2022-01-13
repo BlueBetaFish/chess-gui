@@ -1,32 +1,15 @@
 import { Board, CastlingAvailability } from "./Board";
-import {
-    Coordinate,
-    getAlgebricCoordinateFromIndices,
-    getIndicesFromAlgebricCoordinate,
-    isValidAlgebricCoordinate,
-} from "./chessUtility";
+import { Coordinate, getAlgebricCoordinateFromIndices, getIndicesFromAlgebricCoordinate, isValidAlgebricCoordinate } from "./chessUtility";
 import Piece, { Color, PIECE_POOL, PieceType } from "./Pieces";
 
-const PIECE_SYMBOLS = [
-    "k",
-    "q",
-    "r",
-    "b",
-    "n",
-    "p",
-    "K",
-    "Q",
-    "R",
-    "B",
-    "N",
-    "P",
-];
+const PIECE_SYMBOLS = ["k", "q", "r", "b", "n", "p", "K", "Q", "R", "B", "N", "P"];
 
 // Default start FEN
 // rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
+//4Q3/3PrNBb/p24r/KpP1P3/3pqPk1/p1pP4/p5pp/1r1R4 w - b6 0 1
+//castling bog : r3kb1r/1pp2pp1/p4n1p/1q1pNb2/5B2/P1N1P3/1PPQ1PPP/R3K2R w KQkq - 0 1
 
-export const START_BOARD_FEN =
-    "4Q3/3PrNBb/p24r/KpP1P3/3pqPk1/p1pP4/p5pp/1r1R4 w - b6 0 1";
+export const START_BOARD_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 export const DEFAULT_BOARD = FENToBoard(START_BOARD_FEN);
 
 // -------------------- FEN to Board --------------------
@@ -45,8 +28,7 @@ export function FENToBoard(FEN: string): Board | null {
     // console.log("piece position field (1st) correct");
 
     const currentPlayer = FENToBoardPlayer(fields[1]);
-    if (currentPlayer === null || currentPlayer === Color.UNDEFINED)
-        return null;
+    if (currentPlayer === null || currentPlayer === Color.UNDEFINED) return null;
     // console.log("current player field (2nd) correct");
 
     const castlingAvailability = FENToBoardCastling(fields[2]);
@@ -65,14 +47,7 @@ export function FENToBoard(FEN: string): Board | null {
     const fullMove = +fields[5];
     // console.log("fullmove field (6th) correct");
 
-    return new Board(
-        pieces,
-        currentPlayer,
-        castlingAvailability,
-        enPassant,
-        halfMoves,
-        fullMove
-    );
+    return new Board(pieces, currentPlayer, castlingAvailability, enPassant, halfMoves, fullMove);
 }
 
 /**
@@ -135,9 +110,7 @@ function FENToBoardCastling(castling: string): CastlingAvailability | null {
  * @returns Coordinate corresponding to En Passant square, null if "-" or undefined
  * if string is neither "-" nor a valid algebraic coordinate
  */
-function FENToBoardEnPassant(
-    enPassantField: string
-): Coordinate | null | undefined {
+function FENToBoardEnPassant(enPassantField: string): Coordinate | null | undefined {
     if (enPassantField === "-") return null;
     if (!isValidAlgebricCoordinate(enPassantField)) return undefined;
     return getIndicesFromAlgebricCoordinate(enPassantField);
@@ -166,9 +139,7 @@ export function boardToFEN(board: Board): string | null {
     if (board.enPassant === null) {
         fields[3] = "-";
     } else {
-        const algeraicCoordinate = getAlgebricCoordinateFromIndices(
-            board.enPassant
-        );
+        const algeraicCoordinate = getAlgebricCoordinateFromIndices(board.enPassant);
         if (algeraicCoordinate === null) return null;
         fields[3] = algeraicCoordinate;
     }
@@ -187,15 +158,11 @@ function boardToFENPieces(pieces: Piece[][]): string | null {
     const result: string[] = [];
     for (let i = 7; i >= 0; i--) {
         for (let j = 0; j < 8; j++) {
-            if (pieces[i][j].pieceType !== PieceType.NONE)
-                result.push(pieces[i][j].getFENSymbol());
-            else if (result.length === 0 || !isDigit(result[result.length - 1]))
-                result.push("1");
+            if (pieces[i][j].pieceType !== PieceType.NONE) result.push(pieces[i][j].getFENSymbol());
+            else if (result.length === 0 || !isDigit(result[result.length - 1])) result.push("1");
             else {
                 if (+result[result.length - 1] > 8) return null;
-                result[result.length - 1] = String.fromCharCode(
-                    result[result.length - 1].charCodeAt(0) + 1
-                );
+                result[result.length - 1] = String.fromCharCode(result[result.length - 1].charCodeAt(0) + 1);
             }
         }
         if (i > 0) result.push("/");
@@ -310,8 +277,7 @@ function isPieceSymbol(char: string): boolean {
  */
 function getEmptyBoard(): Piece[][] {
     let nonePiece = PIECE_POOL.getPiece("");
-    if (nonePiece === undefined)
-        nonePiece = new Piece(PieceType.NONE, Color.UNDEFINED);
+    if (nonePiece === undefined) nonePiece = new Piece(PieceType.NONE, Color.UNDEFINED);
     const pieces: Piece[][] = [];
     for (let i = 0; i < 8; i++) {
         const row: Piece[] = new Array(8).fill(nonePiece);

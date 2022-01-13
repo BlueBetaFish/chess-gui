@@ -226,7 +226,12 @@ export default class Game {
                 for (let j = 0; j < n; j++) {
                     let opponentPiece = newBoard?.squares[i][j];
                     if (!newBoard?.isSquareEmpty(new Coordinate(i, j)) && opponentPiece?.pieceColor !== currentPlayer) {
-                        let opponentPseudoLegalMoves = newBoard?.getPseudoLegalMovesOfGivenSquare(new Coordinate(i, j));
+                        /*
+                         *we dont need to check the castling moves of opponent , because castling moves of opponent can not capture my king
+                         *so dont include the castling moves, becaues calling the getKingCastlingMoves() functions many times was causing problem in debugging :)
+                         * so pass false as the value of the parameter "includeCastlingMoves" of  getPseudoLegalMovesOfGivenSquare() function
+                         */
+                        let opponentPseudoLegalMoves = newBoard?.getPseudoLegalMovesOfGivenSquare(new Coordinate(i, j), false);
 
                         //if any of the opponent's pseudo legal moves can capture the current player's king
                         for (const opponentPseudoLegalMove of opponentPseudoLegalMoves) {
