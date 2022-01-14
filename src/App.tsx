@@ -22,14 +22,16 @@ function App() {
                     />
                 <button
                     type="button"
-                    onClick={() => {
+                    onClick={(event) => {
+                        event.preventDefault()
                         setGameObj(new Game(formValue))
                     }}
                 >
                     Update Game
                 </button>
                 <button
-                onClick={() => {
+                onClick={(event) => {
+                    event.preventDefault()
                     setFlip(!flip);
                 }}
             >
