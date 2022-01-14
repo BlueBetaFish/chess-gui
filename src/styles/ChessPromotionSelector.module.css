@@ -1,0 +1,7 @@
+.selector{
+    height: 40vmin;
+    width: 10vmin;
+    display: flex;
+    flex-wrap: wrap;
+
+}
