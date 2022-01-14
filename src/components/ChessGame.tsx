@@ -98,10 +98,10 @@ export default class ChessGame extends Component<GameProps, GameState> {
     render() {
         return (
             <div className={styles.container}>
-                <ChessPromotionSelector 
+                {/* <ChessPromotionSelector 
                     peiceColor={Color.WHITE}
                     promotionClickListener={this.promotionClickListener}
-                />
+                /> */}
                 <ChessBoard 
                     boardObj={this.state.gameBoard} 
                     gameClickListener={this.moveClickListener}
