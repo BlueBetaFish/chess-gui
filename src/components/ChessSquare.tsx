@@ -94,6 +94,7 @@ export default function ChessGrid(props: Props) {
                     : (<></>)
 
             }
+            <span className={styles.debug}>({props.index.x+", "+props.index.y}) </span>
             <img src={'assets/moveIndicator.svg'} className={[styles.moveIndicator, (props.showMoveIndicator) ? styles.showMoveIndicator : " "].join(' ')} />
 
         </div>

@@ -44,3 +44,11 @@ img {
 .showMoveIndicator {
     display: inline;
 }
+
+.debug{
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 10%);
+    z-index: 3;
+    text-shadow:black;
+}
