@@ -28,15 +28,16 @@ function App() {
                 >
                     Update Game
                 </button>
-            </form>
-
-            <button
+                <button
                 onClick={() => {
                     setFlip(!flip);
                 }}
             >
                 Flip
             </button>
+            </form>
+
+            
         </div>
     );
 }

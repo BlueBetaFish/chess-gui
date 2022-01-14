@@ -3,8 +3,10 @@ import ChessBoard from './ChessBoard'
 import Game from '../chess-board/Game'
 import { Coordinate, getIndexinMoveList } from '../chess-board/chessUtility'
 import Move from '../chess-board/Move'
-import { boardToFEN } from '../chess-board/FEN'
 import { Board } from '../chess-board/Board'
+import styles from "../styles/ChessGame.module.css"
+import ChessPromotionSelector from './ChessPromotionSelector'
+import { Color, PieceType } from '../chess-board/Pieces'
 
 type GameProps = {
     gameObj: Game
@@ -28,12 +30,13 @@ export default class ChessGame extends Component<GameProps, GameState> {
 
     constructor(props: GameProps) {
         super(props)
-        this.clickListener = this.clickListener.bind(this);
+        this.moveClickListener = this.moveClickListener.bind(this);
         this.dropListener = this.dropListener.bind(this);
         this.dragStartListener = this.dragStartListener.bind(this);
+        this.promotionClickListener = this.promotionClickListener.bind(this);
     }
 
-    clickListener(event: any, index: Coordinate) {
+    moveClickListener(event: any, index: Coordinate) {
         const move = getIndexinMoveList(index,this.state.movesList);
         if(index.equals(this.state.currentSelected)){
             this.setState({
@@ -54,6 +57,10 @@ export default class ChessGame extends Component<GameProps, GameState> {
                 currentSelected:index
             })
         }
+    }
+
+    promotionClickListener(event: any, pieceType: PieceType){
+        console.log(pieceType)
     }
 
     dragStartListener(event: any, index: Coordinate) {
@@ -90,10 +97,14 @@ export default class ChessGame extends Component<GameProps, GameState> {
 
     render() {
         return (
-            <div>
+            <div className={styles.container}>
+                <ChessPromotionSelector 
+                    peiceColor={Color.WHITE}
+                    promotionClickListener={this.promotionClickListener}
+                />
                 <ChessBoard 
                     boardObj={this.state.gameBoard} 
-                    gameClickListener={this.clickListener}
+                    gameClickListener={this.moveClickListener}
                     gameDropListener={this.dragStartListener}
                     gameDragOverListener={this.dropListener} 
                     showMoveinSquare={this.state.movesList} 
