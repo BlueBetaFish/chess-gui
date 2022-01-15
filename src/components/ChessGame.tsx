@@ -6,7 +6,7 @@ import Move from '../chess-board/Move'
 import { Board } from '../chess-board/Board'
 import styles from "../styles/ChessGame.module.css"
 import ChessPromotionSelector from './ChessPromotionSelector'
-import { Color, PieceType } from '../chess-board/Pieces'
+import Piece, { Color, PieceType } from '../chess-board/Pieces'
 
 type GameProps = {
     gameObj: Game
@@ -16,7 +16,11 @@ type GameProps = {
 type GameState = {
     movesList: Move[]
     currentSelected: Coordinate
-    gameBoard:Board |null
+    gameBoard: Board | null,
+    promoteToPiece: PieceType,
+    promoteToIndex: Coordinate,
+    askForPromotion: boolean
+
 }
 
 
@@ -24,8 +28,11 @@ export default class ChessGame extends Component<GameProps, GameState> {
 
     state: Readonly<GameState> = {
         movesList: [],
-        currentSelected:new Coordinate(),
-        gameBoard:this.props.gameObj.board
+        currentSelected: new Coordinate(),
+        gameBoard: this.props.gameObj.board,
+        promoteToPiece: PieceType.NONE,
+        promoteToIndex: new Coordinate(),
+        askForPromotion: false
     }
 
     constructor(props: GameProps) {
@@ -37,77 +44,125 @@ export default class ChessGame extends Component<GameProps, GameState> {
     }
 
     moveClickListener(event: any, index: Coordinate) {
-        const move = getIndexinMoveList(index,this.state.movesList);
-        if(index.equals(this.state.currentSelected)){
+        const move = getIndexinMoveList(index, this.state.movesList);
+
+        if (this.state.askForPromotion) {
+
+        }
+        else if (index.equals(this.state.currentSelected)) {
+            console.log("toggle")
             this.setState({
                 movesList: [],
-                currentSelected:new Coordinate()
+                currentSelected: new Coordinate()
             })
         }
-        else if(move!==undefined){
-            this.props.gameObj.executeMoveAndMutateGame(move);
-            this.setState({
-                gameBoard:this.props.gameObj.board,
-                movesList: [],
-            })
+        else if (move !== undefined) {
+
+            if (!(move.promotedPiece.equals(new Piece(PieceType.NONE, move.promotedPiece.pieceColor)))) {
+                this.setState({
+                    askForPromotion: true,
+                    promoteToIndex: move.toSquare
+                })
+            }
+            else {
+                this.props.gameObj.executeMoveAndMutateGame(move);
+                this.setState({
+                    gameBoard: this.props.gameObj.board,
+                    movesList: [],
+                })
+            }
         }
-        else{
+        else {
             this.setState({
                 movesList: this.props.gameObj.getLegalMovesOfGivenSquare(index),
-                currentSelected:index
+                currentSelected: index
             })
         }
     }
 
-    promotionClickListener(event: any, pieceType: PieceType){
-        console.log(pieceType)
-    }
-
-    dragStartListener(event: any, index: Coordinate) {
-       
+    promotionClickListener(event: any, pieceType: PieceType) {
         this.setState({
-            movesList: this.props.gameObj.getLegalMovesOfGivenSquare(index),
-            currentSelected:index
+            promoteToPiece: pieceType
         })
     }
 
-    dropListener(event: any, index: Coordinate) {
-        const move = getIndexinMoveList(index,this.state.movesList);
+    dragStartListener(event: any, index: Coordinate) {
 
-        if(move!==undefined){
-            this.props.gameObj.executeMoveAndMutateGame(move);
+        if (!this.state.askForPromotion) {
+            this.setState({
+                movesList: this.props.gameObj.getLegalMovesOfGivenSquare(index),
+                currentSelected: index
+            })
+        }
+    }
+
+    dropListener(event: any, index: Coordinate) {
+        const move = getIndexinMoveList(index, this.state.movesList);
+
+        if (move !== undefined && !this.state.askForPromotion) {
+            if (!(move.promotedPiece.equals(new Piece(PieceType.NONE, move.promotedPiece.pieceColor)))) {
+                this.setState({
+                    askForPromotion: true,
+                    promoteToIndex: move.toSquare
+                })
+            }
+            else {
+                this.props.gameObj.executeMoveAndMutateGame(move);
 
                 this.setState({
-                    gameBoard:this.props.gameObj.board,
+                    gameBoard: this.props.gameObj.board,
                     movesList: [],
-                    currentSelected:new Coordinate()
+                    currentSelected: new Coordinate()
                 })
+            }
         }
     }
 
 
-    componentDidUpdate(prevProps:GameProps) {
-       if(prevProps.gameObj!== this.props.gameObj){
-           this.setState({
-               gameBoard: this.props.gameObj.board,
-               movesList: [],
-           })
-       }
+
+    componentDidUpdate(prevProps: GameProps) {
+        if (prevProps.gameObj !== this.props.gameObj) {
+            this.setState({
+                gameBoard: this.props.gameObj.board,
+                movesList: [],
+            })
+        }
+        if (this.state.askForPromotion && this.state.promoteToPiece !== PieceType.NONE) {
+            const move = this.state.movesList.find(move =>
+                move.toSquare.equals(this.state.promoteToIndex) &&
+                move.promotedPiece.pieceType === this.state.promoteToPiece
+            )
+            if (move !== undefined){
+                this.props.gameObj.executeMoveAndMutateGame(move);
+                this.setState({
+                    gameBoard: this.props.gameObj.board,
+                    movesList: [],
+                    askForPromotion: false,
+                    promoteToPiece: PieceType.NONE,
+                    promoteToIndex: new Coordinate()
+                })
+            }
+
+        }
     }
 
     render() {
         return (
             <div className={styles.container}>
-                {/* <ChessPromotionSelector 
-                    peiceColor={Color.WHITE}
-                    promotionClickListener={this.promotionClickListener}
-                /> */}
-                <ChessBoard 
-                    boardObj={this.state.gameBoard} 
+                {(this.state.askForPromotion) ?
+                    <ChessPromotionSelector
+                        peiceColor={Color.WHITE}
+                        promotionClickListener={this.promotionClickListener}
+                    />
+                    :
+                    <></>
+                }
+                <ChessBoard
+                    boardObj={this.state.gameBoard}
                     gameClickListener={this.moveClickListener}
                     gameDropListener={this.dragStartListener}
-                    gameDragOverListener={this.dropListener} 
-                    showMoveinSquare={this.state.movesList} 
+                    gameDragOverListener={this.dropListener}
+                    showMoveinSquare={this.state.movesList}
                     flipBoard={this.props.flipGame} />
             </div>
         )
