@@ -13,7 +13,7 @@ const PIECE_SYMBOLS = ["k", "q", "r", "b", "n", "p", "K", "Q", "R", "B", "N", "P
 //test position for number of positions : rnbq1k1r/pp1Pbppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R w KQ - 1 8
 //7k/3P4/8/8/8/8/8/K7 w - - 1 8
 
-export const START_BOARD_FEN = "rnbq1k1r/pp1Pbppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R w KQ - 1 8";
+export const START_BOARD_FEN = "rnbqkbnr/pppp1ppp/8/4p3/8/5N2/PPPPPPPP/RNBQKB1R w KQkq e6 0 1";
 export const DEFAULT_BOARD = FENToBoard(START_BOARD_FEN);
 
 // -------------------- FEN to Board --------------------

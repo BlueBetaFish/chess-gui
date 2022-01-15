@@ -847,4 +847,71 @@ export class Board {
         return count;
     }
     //*FOR TESTING------------------------------------------------------------------------------------------------------------------------------------
+
+    getStaticEvaluation(): number {
+        let score: number = 0;
+
+        let n = this.boardSize;
+        for (let i = 0; i < n; i++) {
+            for (let j = 0; j < n; j++) {
+                if (!this.isSquareEmpty(new Coordinate(i, j))) {
+                    if (this.squares[i][j].pieceColor === Color.WHITE) score = score + this.squares[i][j].getBaseMaterialScore();
+                    else if (this.squares[i][j].pieceColor === Color.BLACK) score = score - this.squares[i][j].getBaseMaterialScore();
+                }
+            }
+        }
+
+        return score;
+    }
+
+    minimax(depth: number, alpha: number, beta: number): { bestScore: number; bestMove: Move } {
+        if (depth === 0) return { bestScore: this.getStaticEvaluation(), bestMove: new Move() };
+
+        let moves = this.getAllLegalMovesOfCurrentPlayer();
+        if (moves.length === 0) return { bestScore: this.getStaticEvaluation(), bestMove: new Move() };
+
+        if (this.currentPlayer === Color.WHITE) {
+            let maxScore: number = -100000;
+            let bestMove: Move = new Move();
+            for (const currMove of moves) {
+                let newBoard = this.getNewBoardAfterExecutingMove(currMove);
+                if (!newBoard) continue;
+
+                let { bestScore: currScore } = newBoard.minimax(depth - 1, alpha, beta);
+
+                if (currScore > maxScore) {
+                    maxScore = currScore;
+                    alpha = currScore;
+                    bestMove = currMove;
+                }
+
+                if (alpha >= beta) return { bestScore: maxScore, bestMove: bestMove };
+            }
+
+            return { bestScore: maxScore, bestMove: bestMove };
+        } else {
+            let minScore: number = 100000;
+            let bestMove: Move = new Move();
+            for (const currMove of moves) {
+                let newBoard = this.getNewBoardAfterExecutingMove(currMove);
+                if (!newBoard) continue;
+
+                let { bestScore: currScore } = newBoard.minimax(depth - 1, alpha, beta);
+
+                if (currScore < minScore) {
+                    minScore = currScore;
+                    beta = currScore;
+                    bestMove = currMove;
+                }
+
+                if (alpha >= beta) return { bestScore: minScore, bestMove: bestMove };
+            }
+
+            return { bestScore: minScore, bestMove: bestMove };
+        }
+    }
+
+    getBestMove(depth: number): { bestScore: number; bestMove: Move } {
+        return this.minimax(depth, -10000, 10000);
+    }
 }
