@@ -121,6 +121,10 @@ export default class Game {
         // let depth = 2;
         // let countPositionsUptoDepth = this.board.countPositionsUptoDepth(depth);
         // console.log("No of boardPositions upto depth : " + depth + " ply  =   " + countPositionsUptoDepth);
+
+        // console.log("best move : ");
+        // console.log(this.board.getBestMove(7));
+
         //*-----------------------------------------FOR TESTING NUMBER OF BOARD POSITIONS UPTO CERTAIN DEPT-------------------------------------------------------------
 
         this.board = this.board.getNewBoardAfterExecutingMove(move);
