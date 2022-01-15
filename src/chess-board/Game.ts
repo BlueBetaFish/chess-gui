@@ -1,24 +1,39 @@
 import { count } from "console";
-import { Board } from "./Board";
+import { Board, GameStatus } from "./Board";
 import { Coordinate } from "./chessUtility";
 import { boardToFEN, FENToBoard, START_BOARD_FEN } from "./FEN";
 import Move from "./Move";
 import Piece, { Color, PieceType, PIECE_POOL } from "./Pieces";
 
 /**
- * *Game Class :
+ ** <------------------------------------------------------:::::::::::::DOCUMENTATION :::::::::::----------------------------------------------------------->
+ ** <------------------------------------------------------------------------------------------------------------------------------------------------------->
  *
- * *Public Member Functions :
- * *_____________________________________________________________________________
+ * *Game Class : Class representing a chess game
  *
- * * 1. getEmptySquare() : creates and returns a piece denoting an empty square
+ * *Public member functions :
+ * *_____________________________________________________________
  *
- * * 2. getNewBoardAfterExecutingMove(move) :  creates a new copy of board , executes the move,  and returns the new board without mutating the orginal board field , returns null if something goes wrong
+ * * 1. getLegalMovesOfGivenSquare(fromSquare: Coordinate): Move[] ---------------->
+ *          finds legal moves' list from "fromSquare"
  *
- ** 3. rollBackLastMove() : rolls back the last move of this.board, and returns new board (i mean old board before that move) , without mutating the this.board , returns null if something goes wrong
+ * * 2. executeMoveAndMutateGame(move: Move) ----------->
+ *          executes the given move and mutates the board
  *
- * *4 : getLegalMovesOfGivenSquare(fromSquare) : finds legal moves' list from  "fromSquare
+ * * 3. isCurrentPlayerKingInCheck(): { isKingInCheck: boolean; kingCoordinate: Coordinate } | null ----->
+ *          if current player's king is in check , returns ---> {isKingInCheck : true, kingCoordinate : coordinate of current player's king}
+ *          else , returns ---> {isKingInCheck : false, kingCoordinate : (-1,-1)}
+ *          if board is null , returns null
  *
+ * * 4. getGameStatus(): GameStatus :------->
+ *          1. If current player is check mated : returns "GameStatus.CHECKMATE"
+ *          2. If game current player is stalemated : returns "GameStatus.STALEMATE"
+ *          3. Else returns "GameStatus.RUNNING"
+ *          4. If board is null, returns null
+ *
+ *
+ ** <------------------------------------------------------------------------------------------------------------------------------------------------------->
+ ** <------------------------------------------------------:::::::::::::DOCUMENTATION :::::::::::----------------------------------------------------------->
  */
 
 export default class Game {
@@ -133,5 +148,31 @@ export default class Game {
         this.moveHistory.push(move);
 
         if (this.board) console.log("new Board : " + boardToFEN(this.board));
+    }
+
+    /**
+     *
+     * @returns { isKingInCheck: boolean; kingCoordinate: Coordinate }
+     * if current player's king is in check , returns ---> {isKingInCheck : true, kingCoordinate : coordinate of current player's king}
+     *                                 else , returns ---> {isKingInCheck : false, kingCoordinate : (-1,-1)}
+     *                                 if board is null , returns null
+     */
+    isCurrentPlayerKingInCheck(): { isKingInCheck: boolean; kingCoordinate: Coordinate } | null {
+        if (!this.board) return null;
+        return this.board?.isCurrentPlayerKingInCheck();
+    }
+
+    /**
+     *
+     * @returns GameStatus
+     *  *1. If current player is check mated : returns "GameStatus.CHECKMATE"
+     *  *2. If game current player is stalemated : returns "GameStatus.STALEMATE"
+     *  *3. Else returns "GameStatus.RUNNING"
+     *  *4. If board is null, returns null
+     */
+    getGameStatus(): GameStatus | null {
+        if (!this.board) return null;
+
+        return this.board?.getGameStatus();
     }
 }

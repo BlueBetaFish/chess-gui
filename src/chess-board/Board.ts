@@ -9,20 +9,59 @@ import Move from "./Move";
 import Piece, { Color, PieceType } from "./Pieces";
 
 export type CastlingAvailability = [boolean, boolean, boolean, boolean];
+export enum GameStatus {
+    CHECKMATE = "CHECKMATE",
+    STALEMATE = "STALEMATE",
+    RUNNING = "RUNNING",
+}
 
 /**
+ ** <------------------------------------------------------:::::::::::::DOCUMENTATION :::::::::::----------------------------------------------------------->
+ ** <------------------------------------------------------------------------------------------------------------------------------------------------------->
+ *
  * *Class Representing a Chess Board
  *
  * *Public member functions :
  * *_____________________________________________________________
  *
- * * 1. isCoordinateSafe(square) : checks if the given Coordinate is inside board or not
- * * 2. isSquareEmpty(square) : checks if the given Coordinate is empty or not
- * * 3. getNewBoard() : creates a newBoard(deep copy) and returns it
- * * 4. getPseudoLegalMovesOfGivenSquare(fromSquare) : gets the pseudo legal moves of a piece at fromSquare
+ * * 1. isCoordinateSafe(square: Coordinate): boolean ----------------------->
+ *          checks if the given Coordinate is inside board or not
+ *
+ * * 2. isSquareEmpty(square: Coordinate): boolean -------------------------->
+ *          checks if the given Coordinate is empty or not
+ *
+ * * 3. getNewBoard(): Board ------------------------------------------------>
+ *          creates a newBoard(deep copy) and returns it
+ *
+ * * 4. getPseudoLegalMovesOfGivenSquare(fromSquare: Coordinate): Move[]----->
+ *          gets the pseudo legal moves of a piece at fromSquare
+ *
+ * * 5. getNewBoardAfterExecutingMove(move: Move): Board | null ------------->
+ *          creates a new copy of board , executes the move,  and returns the new board without mutating the orginal board field , returns null if something goes wrong
+ *
+ * * 6. getLegalMovesOfGivenSquare(fromSquare: Coordinate): Move[] ---------->
+ *          finds legal moves' list from "fromSquare"
+ *
+ * * 7. getAllLegalMovesOfCurrentPlayer(): Move[] --------------------------->
+ *          finds all legal moves of all pieces of current player
+ *
+ * * 8. isCurrentPlayerKingInCheck(): { isKingInCheck: boolean; kingCoordinate: Coordinate } ----->
+ *          if current player's king is in check , returns ---> {isKingInCheck : true, kingCoordinate : coordinate of current player's king}
+ *          else , returns ---> {isKingInCheck : false, kingCoordinate : (-1,-1)}
+ *
+ * * 9. getGameStatus(): GameStatus :------->
+ *          1. If current player is check mated : returns "GameStatus.CHECKMATE"
+ *          2. If game current player is stalemated : returns "GameStatus.STALEMATE"
+ *          3. Else returns "GameStatus.RUNNING"
+ *
+ *  * 10. countPositionsUptoDepth(depth: number): number :-------------->
+ *          number of board positions(need not necessarily be distinct) upto given depth(ply)
  *
  *
+ ** <------------------------------------------------------------------------------------------------------------------------------------------------------->
+ ** <------------------------------------------------------:::::::::::::DOCUMENTATION :::::::::::----------------------------------------------------------->
  */
+
 export class Board {
     boardSize: number;
     squares: Piece[][];
@@ -32,6 +71,16 @@ export class Board {
     enPassant: Coordinate | null;
     halfMoveClock: number;
     fullMove: number;
+
+    /*
+    *PROBLEM :
+        if i declare "currentPlayerLegalMoves: Move[][][] | null[][];"
+        then   "if(this.currentPlayerLegalMoves[i][j]) allLegalMoves = [...allLegalMoves, ...this.currentPlayerLegalMoves[i][j]];"  is still telling that
+            this.currentPlayerLegalMoves[i][j] is possibly null  , although i am using the if() condition before
+        
+        So i delcared      "currentPlayerLegalMoves: Move[][][] ;" instead of "currentPlayerLegalMoves: Move[][][]  | null[][];"
+    */
+    currentPlayerLegalMoves: Move[][][];
 
     constructor(
         initialPosition: Piece[][],
@@ -48,13 +97,31 @@ export class Board {
         this.enPassant = enPassant;
         this.halfMoveClock = halfMoveClock;
         this.fullMove = fullMove;
+
+        this.currentPlayerLegalMoves = [];
+        for (let i = 0; i < this.boardSize; i++) {
+            this.currentPlayerLegalMoves[i] = [];
+            for (let j = 0; j < this.boardSize; j++) {
+                this.currentPlayerLegalMoves[i][j] = [];
+            }
+        }
     }
 
-    isCoordinateSafe(square: Coordinate) {
+    /**
+     *
+     * @param square
+     * @returns checks if given square is inside board or not
+     */
+    isCoordinateSafe(square: Coordinate): boolean {
         return 0 <= square.x && square.x < (this.boardSize || -100) && 0 <= square.y && square.y < (this.boardSize || -100);
     }
 
-    isSquareEmpty(square: Coordinate) {
+    /**
+     *
+     * @param square
+     * @returns checks if the given square is empty or not
+     */
+    isSquareEmpty(square: Coordinate): boolean {
         return (
             // this.isCoordinateSafe(square) &&
             this.squares[square.x][square.y].pieceType === PieceType.NONE
@@ -731,6 +798,17 @@ export class Board {
 
         if (!this.isCoordinateSafe(fromSquare)) return [];
 
+        //* if currentPlayerLegalMoves[i][j] was not cached before, then call the function to find moves, and cache
+        /*
+            *PROBLEM :
+                if i declare "currentPlayerLegalMoves: Move[][][] | null[][];"
+                then   "if(this.currentPlayerLegalMoves[i][j]) allLegalMoves = [...allLegalMoves, ...this.currentPlayerLegalMoves[i][j]];"  is still telling that
+                    this.currentPlayerLegalMoves[i][j] is possibly null  , although i am using the if() condition before
+                
+                So i delcared      "currentPlayerLegalMoves: Move[][][] ;" instead of "currentPlayerLegalMoves: Move[][][]  | null[][];"
+        */
+        if (this.currentPlayerLegalMoves[fromSquare.x][fromSquare.y].length > 0) return this.currentPlayerLegalMoves[fromSquare.x][fromSquare.y];
+
         const currentPlayer = this.currentPlayer;
         const opponentPlayer = currentPlayer === Color.WHITE ? Color.BLACK : Color.WHITE;
 
@@ -806,25 +884,80 @@ export class Board {
             // this.rollBackLastMove();
         }
 
-        return legalMoves;
+        //* if currentPlayerLegalMoves[i][j] was not cached before, then call the function to find moves, and cache
+        return (this.currentPlayerLegalMoves[fromSquare.x][fromSquare.y] = legalMoves);
     }
 
-    getAllLegalMovesOfCurrentPlayer() {
-        let moves: Move[] = [];
+    /**
+     * finds all legal moves of all pieces of current player
+     * @returns Move[]
+     */
+    getAllLegalMovesOfCurrentPlayer(): Move[] {
+        let allLegalMoves: Move[] = [];
 
         let n = this.boardSize;
         for (let i = 0; i < n; i++) {
             for (let j = 0; j < n; j++) {
                 if (!this.isSquareEmpty(new Coordinate(i, j)) && this.squares[i][j].pieceColor === this.currentPlayer) {
-                    moves = [...moves, ...this.getLegalMovesOfGivenSquare(new Coordinate(i, j))];
+                    if (this.currentPlayerLegalMoves[i][j].length !== 0) {
+                        allLegalMoves = [...allLegalMoves, ...this.getLegalMovesOfGivenSquare(new Coordinate(i, j))];
+                    }
                 }
             }
         }
 
-        return moves;
+        return allLegalMoves;
+    }
+
+    /**
+     *
+     * @returns { isKingInCheck: boolean; kingCoordinate: Coordinate }
+     * if current player's king is in check , returns ---> {isKingInCheck : true, kingCoordinate : coordinate of current player's king}
+     *                                 else , returns ---> {isKingInCheck : false, kingCoordinate : (-1,-1)}
+     */
+    isCurrentPlayerKingInCheck(): { isKingInCheck: boolean; kingCoordinate: Coordinate } {
+        //*get all pseudo legal moves of opponent and check if opponent can capture my king or not
+        const opponentPlayer = this.currentPlayer === Color.WHITE ? Color.BLACK : Color.WHITE;
+        const n = this.boardSize;
+
+        for (let i = 0; i < n; i++) {
+            for (let j = 0; j < n; j++) {
+                if (this.squares[i][j].pieceColor === opponentPlayer) {
+                    let moves: Move[] = this.getPseudoLegalMovesOfGivenSquare(new Coordinate(i, j));
+
+                    for (const move of moves) {
+                        if (move.capturedPiece.equals(new Piece(PieceType.KING, this.currentPlayer))) {
+                            return { isKingInCheck: true, kingCoordinate: new Coordinate(move.toSquare.x, move.toSquare.y) };
+                        }
+                    }
+                }
+            }
+        }
+        return { isKingInCheck: false, kingCoordinate: new Coordinate(-1, -1) };
+    }
+
+    /**
+     *
+     * @returns GameStatus
+     *  *1. If current player is check mated : returns "GameStatus.CHECKMATE"
+     *  *2. If game current player is stalemated : returns "GameStatus.STALEMATE"
+     *  *3. Else returns "GameStatus.RUNNING"
+     */
+    getGameStatus(): GameStatus {
+        if (this.getAllLegalMovesOfCurrentPlayer().length > 0) return GameStatus.RUNNING;
+
+        // if current player has no move
+        if (this.isCurrentPlayerKingInCheck()) return GameStatus.CHECKMATE;
+        else return GameStatus.STALEMATE;
     }
 
     //*FOR TESTING------------------------------------------------------------------------------------------------------------------------------------
+
+    /**
+     *
+     * @param depth
+     * @returns number of board positions(need not necessarily be distinct) upto given depth(ply)
+     */
     countPositionsUptoDepth(depth: number): number {
         if (depth < 0) {
             // console.log(boardToFEN(this));
