@@ -138,9 +138,16 @@ export default class ChessGame extends Component<GameProps, GameState> {
     componentDidUpdate(prevProps: GameProps) {
         if (prevProps.gameObj !== this.props.gameObj) {
             this.setState({
-                gameBoard: this.props.gameObj.board,
-                gameStatus: GameStatus.RUNNING,
                 movesList: [],
+                gameBoard: this.props.gameObj.board,
+                askForPromotion: false, //Can be denoted by index
+                checkIndex: new Coordinate(),
+                gameStatus: GameStatus.RUNNING,
+        
+                currentSelected: new Coordinate(),
+                promoteToPiece: PieceType.NONE,
+                promoteToIndex: new Coordinate(),
+                promotionColor: Color.UNDEFINED,
             })
         }
         if (this.state.askForPromotion && this.state.promoteToPiece !== PieceType.NONE) {
