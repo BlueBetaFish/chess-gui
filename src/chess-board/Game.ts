@@ -139,7 +139,7 @@ export default class Game {
         // console.log("best move : ");
         // console.log(this.board.getBestMove(7));
 
-        // console.log("gameStatus before executing move: " + this.getGameStatus());
+        console.log("gameStatus before executing move: " + this.getGameStatus());
 
         //*-----------------------------------------FOR TESTING NUMBER OF BOARD POSITIONS UPTO CERTAIN DEPT-------------------------------------------------------------
 
@@ -149,6 +149,8 @@ export default class Game {
         this.moveHistory.push(move);
 
         if (this.board) console.log("new Board : " + boardToFEN(this.board));
+
+        console.log("gameStatus after executing move: " + this.getGameStatus());
     }
 
     /**

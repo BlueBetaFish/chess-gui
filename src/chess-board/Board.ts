@@ -949,7 +949,7 @@ export class Board {
         if (this.getAllLegalMovesOfCurrentPlayer().length > 0) return GameStatus.RUNNING;
 
         // if current player has no move
-        if (this.isCurrentPlayerKingInCheck()) return GameStatus.CHECKMATE;
+        if (this.isCurrentPlayerKingInCheck().isKingInCheck) return GameStatus.CHECKMATE;
         else return GameStatus.STALEMATE;
     }
 
