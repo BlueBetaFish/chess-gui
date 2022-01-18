@@ -5,7 +5,6 @@ import Piece, { Color, PieceType } from "./Pieces";
 
 export type CastlingAvailability = [boolean, boolean, boolean, boolean];
 
-
 /**
  ** <------------------------------------------------------:::::::::::::DOCUMENTATION :::::::::::----------------------------------------------------------->
  ** <------------------------------------------------------------------------------------------------------------------------------------------------------->
@@ -891,9 +890,7 @@ export class Board {
         for (let i = 0; i < n; i++) {
             for (let j = 0; j < n; j++) {
                 if (!this.isSquareEmpty(new Coordinate(i, j)) && this.squares[i][j].pieceColor === this.currentPlayer) {
-                    if (this.currentPlayerLegalMoves[i][j].length !== 0) {
-                        allLegalMoves = [...allLegalMoves, ...this.getLegalMovesOfGivenSquare(new Coordinate(i, j))];
-                    }
+                    allLegalMoves = [...allLegalMoves, ...this.getLegalMovesOfGivenSquare(new Coordinate(i, j))];
                 }
             }
         }
@@ -941,6 +938,14 @@ export class Board {
      *  *3. Else returns "GameStatus.RUNNING"
      */
     getGameStatus(): GameStatus {
+        // console.log("current player : " + this.currentPlayer);
+        // console.log("current fen " + boardToFEN(this));
+
+        // console.log("moves array : ");
+        // console.log(this.getAllLegalMovesOfCurrentPlayer());
+
+        // return GameStatus.RUNNING;
+
         if (this.getAllLegalMovesOfCurrentPlayer().length > 0) return GameStatus.RUNNING;
 
         // if current player has no move
