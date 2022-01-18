@@ -139,6 +139,7 @@ export default class ChessGame extends Component<GameProps, GameState> {
         if (prevProps.gameObj !== this.props.gameObj) {
             this.setState({
                 gameBoard: this.props.gameObj.board,
+                gameStatus: GameStatus.RUNNING,
                 movesList: [],
             })
         }
@@ -151,6 +152,7 @@ export default class ChessGame extends Component<GameProps, GameState> {
                 this.props.gameObj.executeMoveAndMutateGame(move);
                 this.setState({
                     gameBoard: this.props.gameObj.board,
+                    checkIndex: this.props.gameObj.isCurrentPlayerKingInCheck()?.kingCoordinate ?? new Coordinate(),
                     movesList: [],
                     askForPromotion: false,
                     promoteToPiece: PieceType.NONE,
