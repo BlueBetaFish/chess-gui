@@ -1,5 +1,5 @@
-import { Board, GameStatus } from "./Board";
-import { Coordinate } from "./chessUtility";
+import { Board } from "./Board";
+import { Coordinate, GameStatus } from "./chessUtility";
 import { boardToFEN, FENToBoard, START_BOARD_FEN } from "./FEN";
 import Move from "./Move";
 import Piece, { Color, PieceType, PIECE_POOL } from "./Pieces";

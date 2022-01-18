@@ -1,7 +1,7 @@
 import { Component } from 'react'
 import ChessBoard from './ChessBoard'
 import Game from '../chess-board/Game'
-import { Coordinate, getIndexinMoveList } from '../chess-board/chessUtility'
+import { Coordinate, getIndexinMoveList, GameStatus } from '../chess-board/chessUtility'
 import Move from '../chess-board/Move'
 import { Board } from '../chess-board/Board'
 import styles from "../styles/ChessGame.module.css"
@@ -17,7 +17,7 @@ type GameState = {
     gameBoard: Board | null,
     askForPromotion: boolean,
     checkIndex: Coordinate,
-    // gameStatus: GameState
+    gameStatus: GameStatus
 
     movesList: Move[],
     currentSelected: Coordinate
@@ -35,6 +35,7 @@ export default class ChessGame extends Component<GameProps, GameState> {
         gameBoard: this.props.gameObj.board,
         askForPromotion: false, //Can be denoted by index
         checkIndex: new Coordinate(),
+        gameStatus: GameStatus.RUNNING,
 
         currentSelected: new Coordinate(),
         promoteToPiece: PieceType.NONE,
@@ -52,18 +53,10 @@ export default class ChessGame extends Component<GameProps, GameState> {
 
     moveClickListener(event: any, index: Coordinate) {
         const move = getIndexinMoveList(index, this.state.movesList);
-        // this.setState({
-        //     checkIndex: this.props.gameObj.isCurrentPlayerKingInCheck()?.kingCoordinate ?? new Coordinate()
-        // })
-        // console.log("func", this.props.gameObj.isCurrentPlayerKingInCheck()?.kingCoordinate)
-        // console.log("state", this.state.checkIndex)
 
-        if (this.state.askForPromotion) {
-
+        if (this.state.askForPromotion || this.state.gameStatus === GameStatus.CHECKMATE || this.state.gameStatus === GameStatus.STALEMATE) {
+            //Freeze UI
         }
-        // else if () {
-
-        // }
         else if (index.equals(this.state.currentSelected)) {
             this.setState({
                 movesList: [],
@@ -80,16 +73,14 @@ export default class ChessGame extends Component<GameProps, GameState> {
                 })
             }
             else {
-                console.group("click log")
-                console.log(this.props.gameObj.isCurrentPlayerKingInCheck()?.kingCoordinate)
                 this.props.gameObj.executeMoveAndMutateGame(move);
-                console.log(this.props.gameObj.isCurrentPlayerKingInCheck()?.kingCoordinate)
-                console.groupEnd()
                 this.setState({
                     gameBoard: this.props.gameObj.board,
                     checkIndex: this.props.gameObj.isCurrentPlayerKingInCheck()?.kingCoordinate ?? new Coordinate(),
+                    gameStatus: this.props.gameObj.getGameStatus() ?? GameStatus.RUNNING,
                     movesList: [],
                 })
+                console.log("click set", this.props.gameObj.getGameStatus())
             }
         }
         else {
@@ -132,9 +123,12 @@ export default class ChessGame extends Component<GameProps, GameState> {
 
                 this.setState({
                     gameBoard: this.props.gameObj.board,
+                    checkIndex: this.props.gameObj.isCurrentPlayerKingInCheck()?.kingCoordinate ?? new Coordinate(),
+                    gameStatus: this.props.gameObj.getGameStatus() ?? GameStatus.RUNNING,
                     movesList: [],
                     currentSelected: new Coordinate()
                 })
+                console.log("drop set", this.props.gameObj.getGameStatus())
             }
         }
     }
@@ -168,7 +162,9 @@ export default class ChessGame extends Component<GameProps, GameState> {
     }
 
     render() {
+        console.log("render", this.state.gameStatus)
         return (
+
             <div className={styles.container}>
                 {(this.state.askForPromotion) ?
                     <ChessPromotionSelector
@@ -189,7 +185,14 @@ export default class ChessGame extends Component<GameProps, GameState> {
                     flipBoard={this.props.flipGame}
                     checkIndex={this.state.checkIndex}
                 />
+                {(this.state.gameStatus === GameStatus.CHECKMATE || this.state.gameStatus === GameStatus.STALEMATE) ?
+                    <span >{this.state.gameStatus}! <a onClick={() => { window.location.reload(); }}>Reload.</a></span> :
+                    <></>
+                }
             </div>
+
+
+
         )
     }
 }

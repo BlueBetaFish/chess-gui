@@ -7,19 +7,19 @@ import ChessGame from "./components/ChessGame";
 function App() {
     const [flip, setFlip] = useState(false);
     const [formValue, setFormValue] = useState("");
-    const [gameObj,setGameObj]=useState(new Game("8/6P1/8/1k6/8/1K6/6p1/8 w - - 0 1"));
+    const [gameObj, setGameObj] = useState(new Game("2R5/q3p1p1/P1p1P1bn/8/5k2/5n2/2PP1p1P/2K5 w - - 0 1"));
 
     return (
         <div className="App">
             <ChessGame gameObj={gameObj} flipGame={flip} />
             <form>
-                    <input
-                        type="text"
-                        name="fen"
-                        onChange={(event) => {
-                            setFormValue(event.target.value);
-                        }}
-                    />
+                <input
+                    type="text"
+                    name="fen"
+                    onChange={(event) => {
+                        setFormValue(event.target.value);
+                    }}
+                />
                 <button
                     type="button"
                     onClick={(event) => {
@@ -30,16 +30,16 @@ function App() {
                     Update Game
                 </button>
                 <button
-                onClick={(event) => {
-                    event.preventDefault()
-                    setFlip(!flip);
-                }}
-            >
-                Flip
-            </button>
+                    onClick={(event) => {
+                        event.preventDefault()
+                        setFlip(!flip);
+                    }}
+                >
+                    Flip
+                </button>
             </form>
 
-            
+
         </div>
     );
 }
