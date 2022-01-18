@@ -186,7 +186,7 @@ export default class ChessGame extends Component<GameProps, GameState> {
                     checkIndex={this.state.checkIndex}
                 />
                 {(this.state.gameStatus === GameStatus.CHECKMATE || this.state.gameStatus === GameStatus.STALEMATE) ?
-                    <span >{this.state.gameStatus}! <a onClick={() => { window.location.reload(); }}>Reload.</a></span> :
+                    <span >{this.state.gameStatus}! <a href='/'>Reload.</a></span> :
                     <></>
                 }
             </div>
