@@ -912,7 +912,7 @@ export class Board {
         const opponentPlayer = this.currentPlayer === Color.WHITE ? Color.BLACK : Color.WHITE;
         const n = this.boardSize;
 
-        console.log(`current player : ${this.currentPlayer}`);
+        // console.log(`current player : ${this.currentPlayer}`);
 
         for (let i = 0; i < n; i++) {
             for (let j = 0; j < n; j++) {
