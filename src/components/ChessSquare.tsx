@@ -4,7 +4,7 @@ import { Coordinate } from '../chess-board/chessUtility'
 
 
 
-type Props = {
+type ChessSquareProps = {
     piece: Piece,
     index: Coordinate,
     colorIndex: Coordinate,
@@ -12,10 +12,11 @@ type Props = {
     boardDropListener: any,
     boardDragStartListener: any,
     showMoveIndicator: boolean,
+    isInCheck: boolean,
     theme?: string
 }
 
-export default function ChessGrid(props: Props) {
+export default function ChessGrid(props: ChessSquareProps) {
 
     const themeStringPrefix = `assets/pieces/cardinal/`
 
@@ -73,28 +74,28 @@ export default function ChessGrid(props: Props) {
 
     function isLightSquare(): boolean {
         const { x, y } = props.colorIndex;
-        return ((x+y)%2===0)
+        return ((x + y) % 2 === 0)
     }
-
 
     return (
         <div className={
-            [styles.grid, (isLightSquare()) ? styles.light : styles.dark].join(' ')} 
-            onClick={(event) => { props.boardClickListener(event, props.index) }} 
-            onDrop={(event: any)=>{props.boardDropListener(event, props.index)}}
-            onDragOver={(event: any)=>{event.preventDefault()}} >
+            [styles.grid, (isLightSquare()) ? styles.light : styles.dark].join(' ')}
+            onClick={(event) => { props.boardClickListener(event, props.index) }}
+            onDrop={(event: any) => { props.boardDropListener(event, props.index) }}
+            onDragOver={(event: any) => { event.preventDefault() }}
+            style={(props.isInCheck) ? { backgroundColor: "#E67B6E" } : {}} >
             {
                 (props.piece.pieceColor !== Color.UNDEFINED) ?
-                    <img 
-                    id={props.piece.pieceType+props.piece.pieceColor+props.index.x+props.index.y}
-                    src={getImageSrc(props.piece.pieceType, props.piece.pieceColor)}
-                    draggable={true}
-                    onDragStart={(event:any)=>{props.boardDragStartListener(event,props.index)}}
-                     />
+                    <img
+                        id={props.piece.pieceType + props.piece.pieceColor + props.index.x + props.index.y}
+                        src={getImageSrc(props.piece.pieceType, props.piece.pieceColor)}
+                        draggable={true}
+                        onDragStart={(event: any) => { props.boardDragStartListener(event, props.index) }}
+                    />
                     : (<></>)
 
             }
-            <span className={styles.debug}>({props.index.x+", "+props.index.y}) </span>
+            <span className={styles.debug}>({props.index.x + ", " + props.index.y}) </span>
             <img src={'assets/moveIndicator.svg'} className={[styles.moveIndicator, (props.showMoveIndicator) ? styles.showMoveIndicator : " "].join(' ')} />
 
         </div>

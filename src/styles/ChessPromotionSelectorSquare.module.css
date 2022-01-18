@@ -1,0 +1,19 @@
+.selectorSquare {
+  position: relative;
+  height: 10vmin;
+  width: 10vmin;
+  box-sizing: border-box;
+  background-color: white;
+}
+
+.selectorSquare:hover {
+  border: 3px solid aquamarine;
+}
+img {
+  position: relative;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}

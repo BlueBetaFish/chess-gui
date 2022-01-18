@@ -10,14 +10,13 @@ type BoardProps = {
     boardObj: Board | null,
     showMoveinSquare: Move[],
     gameClickListener: any,
-    gameDropListener:any,
+    gameDropListener: any,
     gameDragOverListener: any,
+    checkIndex: Coordinate,
     flipBoard?: boolean
 }
 
-type BoardState = {
-    highlightedCoords: Coordinate[]
-}
+type BoardState = any
 
 
 
@@ -25,6 +24,7 @@ export default class ChessBoard extends Component<BoardProps, BoardState> {
 
 
     render() {
+        // console.log(this.props.checkIndex)
         return (
             <div className={styles.board}>
 
@@ -44,7 +44,8 @@ export default class ChessBoard extends Component<BoardProps, BoardState> {
                                                 boardClickListener={this.props.gameClickListener}
                                                 boardDragStartListener={this.props.gameDropListener}
                                                 boardDropListener={this.props.gameDragOverListener}
-                                                showMoveIndicator={getIndexinMoveList(index,this.props.showMoveinSquare)!==undefined}
+                                                showMoveIndicator={getIndexinMoveList(index, this.props.showMoveinSquare) !== undefined}
+                                                isInCheck={this.props.checkIndex.equals(index)}
                                             />)
                                     })
                                 }
@@ -67,8 +68,8 @@ export default class ChessBoard extends Component<BoardProps, BoardState> {
                                                 boardClickListener={this.props.gameClickListener}
                                                 boardDragStartListener={this.props.gameDropListener}
                                                 boardDropListener={this.props.gameDragOverListener}
-                                                showMoveIndicator={getIndexinMoveList(index,this.props.showMoveinSquare)!==undefined}
-
+                                                showMoveIndicator={getIndexinMoveList(index, this.props.showMoveinSquare) !== undefined}
+                                                isInCheck={this.props.checkIndex.equals(index)}
                                             />)
                                     }
                                     )

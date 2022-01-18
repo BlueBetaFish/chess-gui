@@ -7,7 +7,7 @@ import ChessGame from "./components/ChessGame";
 function App() {
     const [flip, setFlip] = useState(false);
     const [formValue, setFormValue] = useState("");
-    const [gameObj,setGameObj]=useState(new Game(START_BOARD_FEN));
+    const [gameObj,setGameObj]=useState(new Game("8/6P1/8/1k6/8/1K6/6p1/8 w - - 0 1"));
 
     return (
         <div className="App">
