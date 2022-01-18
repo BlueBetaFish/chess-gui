@@ -916,15 +916,15 @@ export class Board {
         const opponentPlayer = this.currentPlayer === Color.WHITE ? Color.BLACK : Color.WHITE;
         const n = this.boardSize;
 
-        console.log(`current player : ${this.currentPlayer}`);
+        // console.log(`current player : ${this.currentPlayer}`);
 
         for (let i = 0; i < n; i++) {
             for (let j = 0; j < n; j++) {
                 if (this.squares[i][j].pieceColor === opponentPlayer) {
                     let moves: Move[] = this.getPseudoLegalMovesOfGivenSquare(new Coordinate(i, j), true, false);
 
-                    console.log("moves of " + opponentPlayer + " " + this.squares[i][j].pieceType + "  :  ");
-                    console.log(moves);
+                    // console.log("moves of " + opponentPlayer + " " + this.squares[i][j].pieceType + "  :  ");
+                    // console.log(moves);
 
                     for (const move of moves) {
                         if (move.capturedPiece.equals(new Piece(PieceType.KING, this.currentPlayer))) {
