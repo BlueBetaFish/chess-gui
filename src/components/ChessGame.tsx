@@ -16,7 +16,8 @@ type GameProps = {
 type GameState = {
     gameBoard: Board | null,
     askForPromotion: boolean,
-    checkIndex: Coordinate
+    checkIndex: Coordinate,
+    // gameStatus: GameState
 
     movesList: Move[],
     currentSelected: Coordinate
@@ -51,16 +52,18 @@ export default class ChessGame extends Component<GameProps, GameState> {
 
     moveClickListener(event: any, index: Coordinate) {
         const move = getIndexinMoveList(index, this.state.movesList);
-        this.setState({
-            checkIndex: this.props.gameObj.isCurrentPlayerKingInCheck()?.kingCoordinate ?? new Coordinate()
-        })
-        console.log("func", this.props.gameObj.isCurrentPlayerKingInCheck()?.kingCoordinate)
-        console.log("state", this.state.checkIndex)
+        // this.setState({
+        //     checkIndex: this.props.gameObj.isCurrentPlayerKingInCheck()?.kingCoordinate ?? new Coordinate()
+        // })
+        // console.log("func", this.props.gameObj.isCurrentPlayerKingInCheck()?.kingCoordinate)
+        // console.log("state", this.state.checkIndex)
 
         if (this.state.askForPromotion) {
 
         }
+        // else if () {
 
+        // }
         else if (index.equals(this.state.currentSelected)) {
             this.setState({
                 movesList: [],
@@ -77,9 +80,14 @@ export default class ChessGame extends Component<GameProps, GameState> {
                 })
             }
             else {
+                console.group("click log")
+                console.log(this.props.gameObj.isCurrentPlayerKingInCheck()?.kingCoordinate)
                 this.props.gameObj.executeMoveAndMutateGame(move);
+                console.log(this.props.gameObj.isCurrentPlayerKingInCheck()?.kingCoordinate)
+                console.groupEnd()
                 this.setState({
                     gameBoard: this.props.gameObj.board,
+                    checkIndex: this.props.gameObj.isCurrentPlayerKingInCheck()?.kingCoordinate ?? new Coordinate(),
                     movesList: [],
                 })
             }
