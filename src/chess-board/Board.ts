@@ -1,14 +1,10 @@
-import { Coordinate } from "./chessUtility";
+import { Coordinate, GameStatus } from "./chessUtility";
 import { boardToFEN } from "./FEN";
 import Move from "./Move";
 import Piece, { Color, PieceType } from "./Pieces";
 
 export type CastlingAvailability = [boolean, boolean, boolean, boolean];
-export enum GameStatus {
-    CHECKMATE = "CHECKMATE",
-    STALEMATE = "STALEMATE",
-    RUNNING = "RUNNING",
-}
+
 
 /**
  ** <------------------------------------------------------:::::::::::::DOCUMENTATION :::::::::::----------------------------------------------------------->
@@ -923,8 +919,8 @@ export class Board {
                 if (this.squares[i][j].pieceColor === opponentPlayer) {
                     let moves: Move[] = this.getPseudoLegalMovesOfGivenSquare(new Coordinate(i, j), true, false);
 
-                    console.log("moves of " + opponentPlayer + " " + this.squares[i][j].pieceType + "  :  ");
-                    console.log(moves);
+                    // console.log("moves of " + opponentPlayer + " " + this.squares[i][j].pieceType + "  :  ");
+                    // console.log(moves);
 
                     for (const move of moves) {
                         if (move.capturedPiece.equals(new Piece(PieceType.KING, this.currentPlayer))) {

@@ -14,6 +14,12 @@ export class Coordinate {
     }
 }
 
+export enum GameStatus {
+    CHECKMATE = "CHECKMATE",
+    STALEMATE = "STALEMATE",
+    RUNNING = "RUNNING",
+}
+
 export function isValidAlgebricCoordinate(algebricCoordinate: string): boolean {
     //if algebricCoordinate contains more than 2 characters
     if (algebricCoordinate.length !== 2) return false;
