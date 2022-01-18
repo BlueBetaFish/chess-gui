@@ -1,8 +1,3 @@
-/*
-*Test FEN string for castling : r1b1k2r/p2p4/pq6/8/1P6/R3P3/P1PP4/4K2R w Kkq - 7 33
-
-*/
-
 import { Coordinate } from "./chessUtility";
 import { boardToFEN } from "./FEN";
 import Move from "./Move";
@@ -644,14 +639,15 @@ export class Board {
      * @param fromSquare , includeCastlingMoves(by defaule true)
      * @returns pseudo legal moves of a piece :Move[]
      */
-    getPseudoLegalMovesOfGivenSquare(fromSquare: Coordinate, includeCastlingMoves: boolean = true): Move[] {
+    getPseudoLegalMovesOfGivenSquare(fromSquare: Coordinate, includeCastlingMoves: boolean = true, onlyForCurrentPlayer: boolean = true): Move[] {
         //if fromSquare is not inside board or empty
         if (!this.isCoordinateSafe(fromSquare) || this.isSquareEmpty(fromSquare)) return [];
 
         let currentPiece = this.squares[fromSquare.x][fromSquare.y];
 
+        //*TODO: uncomment
         //if the piece at fromSquare is not of currentPlayer
-        if (currentPiece?.pieceColor !== this.currentPlayer) return [];
+        if (onlyForCurrentPlayer && currentPiece?.pieceColor !== this.currentPlayer) return [];
 
         if (currentPiece?.isPieceType(PieceType.BISHOP)) return this.getBishopPseudoLegalMoves(fromSquare);
         else if (currentPiece?.isPieceType(PieceType.KING)) return this.getKingPseudoLegalMoves(fromSquare, includeCastlingMoves);
@@ -920,10 +916,15 @@ export class Board {
         const opponentPlayer = this.currentPlayer === Color.WHITE ? Color.BLACK : Color.WHITE;
         const n = this.boardSize;
 
+        console.log(`current player : ${this.currentPlayer}`);
+
         for (let i = 0; i < n; i++) {
             for (let j = 0; j < n; j++) {
                 if (this.squares[i][j].pieceColor === opponentPlayer) {
-                    let moves: Move[] = this.getPseudoLegalMovesOfGivenSquare(new Coordinate(i, j));
+                    let moves: Move[] = this.getPseudoLegalMovesOfGivenSquare(new Coordinate(i, j), true, false);
+
+                    console.log("moves of " + opponentPlayer + " " + this.squares[i][j].pieceType + "  :  ");
+                    console.log(moves);
 
                     for (const move of moves) {
                         if (move.capturedPiece.equals(new Piece(PieceType.KING, this.currentPlayer))) {

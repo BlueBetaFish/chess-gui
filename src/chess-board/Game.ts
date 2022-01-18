@@ -1,4 +1,3 @@
-import { count } from "console";
 import { Board, GameStatus } from "./Board";
 import { Coordinate } from "./chessUtility";
 import { boardToFEN, FENToBoard, START_BOARD_FEN } from "./FEN";
@@ -27,7 +26,7 @@ import Piece, { Color, PieceType, PIECE_POOL } from "./Pieces";
  *
  * * 4. getGameStatus(): GameStatus :------->
  *          1. If current player is check mated : returns "GameStatus.CHECKMATE"
- *          2. If game current player is stalemated : returns "GameStatus.STALEMATE"
+ *          2. If current player is stalemated : returns "GameStatus.STALEMATE"
  *          3. Else returns "GameStatus.RUNNING"
  *          4. If board is null, returns null
  *
