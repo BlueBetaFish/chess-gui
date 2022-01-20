@@ -35,7 +35,7 @@ export default class ChessPromotionSelector extends Component<ChessPromotionSele
 
 
 
-    private flip = () => (this.props.index.x == 0 !== this.props.boardFlipped) !== (this.props.peiceColor === Color.BLACK)
+    private flip = () => (this.props.index.x == 0 !== this.props.boardFlipped)
     private getAbsoluteIndexfromIndex = (): Coordinate => {
         if (this.props.boardFlipped) {
             return new Coordinate(this.props.index.x, 7 - this.props.index.y)
@@ -48,8 +48,7 @@ export default class ChessPromotionSelector extends Component<ChessPromotionSele
 
     getTranslateFromIndex = () => {
         const index = this.getAbsoluteIndexfromIndex()
-
-        return `translate(${(index.y) * 10}vmin, ${(this.flip()) ? "40min" : "0vmin"})`
+        return `translate(${(index.y) * 10}vmin, ${(this.flip()) ? "40vmin" : "0vmin"})`
     }
 
     boardClickListener = () => { }
@@ -71,7 +70,6 @@ export default class ChessPromotionSelector extends Component<ChessPromotionSele
     }
 
     render() {
-        console.log(this.state.translateString)
         return (
             <div
                 className={styles.selector}

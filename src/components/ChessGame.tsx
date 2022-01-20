@@ -171,7 +171,6 @@ export default class ChessGame extends Component<GameProps, GameState> {
     }
 
     render() {
-        console.log("render", this.state.gameStatus)
         return (
 
             <div className={styles.container}>
