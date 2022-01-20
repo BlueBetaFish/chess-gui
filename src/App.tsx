@@ -16,7 +16,7 @@ export default class App extends Component<any, AppState> {
     state: AppState = {
         flip: false,
         formValue: "",
-        gameObj: new Game("8/PPPPPPPP/k7/8/K7/8/pppppppp/8 b - - 0 1")
+        gameObj: new Game(START_BOARD_FEN)
     }
 
 

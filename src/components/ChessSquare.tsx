@@ -25,7 +25,13 @@ export default class ChessSquare extends Component<ChessSquareProps, any> {
         this.themeStringPrefix = `assets/pieces/cardinal/`
     }
 
-    getImageSrc = (peiceType: PieceType, peiceColor: Color): string => {
+    /**
+     * 
+     * @param peiceType 
+     * @param peiceColor 
+     * @returns the src of piece asset depending on the peiceType and Color 
+     */
+    private getImageSrc = (peiceType: PieceType, peiceColor: Color): string => {
 
         if (peiceColor === Color.WHITE) {
 
@@ -77,7 +83,11 @@ export default class ChessSquare extends Component<ChessSquareProps, any> {
         return ""
     }
 
-    isLightSquare = (): boolean => ((this.props.colorIndex.x + this.props.colorIndex.y) % 2 === 0)
+    /**
+     * 
+     * @returns true if the square is light
+     */
+    private isLightSquare = (): boolean => ((this.props.colorIndex.x + this.props.colorIndex.y) % 2 === 0)
 
     render() {
         return (
