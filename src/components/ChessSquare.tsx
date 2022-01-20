@@ -1,6 +1,7 @@
 import Piece, { Color, PieceType } from '../chess-board/Pieces'
 import styles from "../styles/ChessSquare.module.css"
 import { Coordinate } from '../chess-board/chessUtility'
+import { Component } from 'react'
 
 
 
@@ -16,33 +17,37 @@ type ChessSquareProps = {
     theme?: string
 }
 
-export default function ChessGrid(props: ChessSquareProps) {
+export default class ChessSquare extends Component<ChessSquareProps, any> {
 
-    const themeStringPrefix = `assets/pieces/cardinal/`
+    themeStringPrefix: string;
+    constructor(props: ChessSquareProps) {
+        super(props)
+        this.themeStringPrefix = `assets/pieces/cardinal/`
+    }
 
-    function getImageSrc(peiceType: PieceType, peiceColor: Color): string {
+    getImageSrc = (peiceType: PieceType, peiceColor: Color): string => {
 
         if (peiceColor === Color.WHITE) {
 
             switch (peiceType) {
 
                 case PieceType.PAWN:
-                    return themeStringPrefix + "wp.svg";
+                    return this.themeStringPrefix + "wp.svg";
 
                 case PieceType.KNIGHT:
-                    return themeStringPrefix + "wn.svg";
+                    return this.themeStringPrefix + "wn.svg";
 
                 case PieceType.BISHOP:
-                    return themeStringPrefix + "wb.svg";
+                    return this.themeStringPrefix + "wb.svg";
 
                 case PieceType.ROOK:
-                    return themeStringPrefix + "wr.svg";
+                    return this.themeStringPrefix + "wr.svg";
 
                 case PieceType.QUEEN:
-                    return themeStringPrefix + "wq.svg";
+                    return this.themeStringPrefix + "wq.svg";
 
                 case PieceType.KING:
-                    return themeStringPrefix + "wk.svg";
+                    return this.themeStringPrefix + "wk.svg";
 
             }
         }
@@ -51,53 +56,51 @@ export default function ChessGrid(props: ChessSquareProps) {
             switch (peiceType) {
 
                 case PieceType.PAWN:
-                    return themeStringPrefix + "bp.svg";
+                    return this.themeStringPrefix + "bp.svg";
 
                 case PieceType.KNIGHT:
-                    return themeStringPrefix + "bn.svg";
+                    return this.themeStringPrefix + "bn.svg";
 
                 case PieceType.BISHOP:
-                    return themeStringPrefix + "bb.svg";
+                    return this.themeStringPrefix + "bb.svg";
 
                 case PieceType.ROOK:
-                    return themeStringPrefix + "br.svg";
+                    return this.themeStringPrefix + "br.svg";
 
                 case PieceType.QUEEN:
-                    return themeStringPrefix + "bq.svg";
+                    return this.themeStringPrefix + "bq.svg";
 
                 case PieceType.KING:
-                    return themeStringPrefix + "bk.svg";
+                    return this.themeStringPrefix + "bk.svg";
             }
         }
         return ""
     }
 
-    function isLightSquare(): boolean {
-        const { x, y } = props.colorIndex;
-        return ((x + y) % 2 === 0)
+    isLightSquare = (): boolean => ((this.props.colorIndex.x + this.props.colorIndex.y) % 2 === 0)
+
+    render() {
+        return (
+            <div className={
+                [styles.grid, (this.isLightSquare()) ? styles.light : styles.dark].join(' ')}
+                onClick={(event) => { this.props.boardClickListener(event, this.props.index) }}
+                onDrop={(event: any) => { this.props.boardDropListener(event, this.props.index) }}
+                onDragOver={(event: any) => { event.preventDefault() }}
+                style={(this.props.isInCheck) ? { backgroundColor: "#E67B6E" } : {}} 
+                >
+                {
+                    (this.props.piece.pieceColor !== Color.UNDEFINED) ?
+                        <img
+                            id={this.props.piece.pieceType + this.props.piece.pieceColor + this.props.index.x + this.props.index.y}
+                            src={this.getImageSrc(this.props.piece.pieceType, this.props.piece.pieceColor)}
+                            draggable={true}
+                            onDragStart={(event: any) => { this.props.boardDragStartListener(event, this.props.index) }}
+                        />
+                        : (<></>)
+                }
+                <span className={styles.debug}>({this.props.index.x + ", " + this.props.index.y}) </span>
+                <img src={'assets/moveIndicator.svg'} className={[styles.moveIndicator, (this.props.showMoveIndicator) ? styles.showMoveIndicator : " "].join(' ')} />
+            </div>
+        )
     }
-
-    return (
-        <div className={
-            [styles.grid, (isLightSquare()) ? styles.light : styles.dark].join(' ')}
-            onClick={(event) => { props.boardClickListener(event, props.index) }}
-            onDrop={(event: any) => { props.boardDropListener(event, props.index) }}
-            onDragOver={(event: any) => { event.preventDefault() }}
-            style={(props.isInCheck) ? { backgroundColor: "#E67B6E" } : {}} >
-            {
-                (props.piece.pieceColor !== Color.UNDEFINED) ?
-                    <img
-                        id={props.piece.pieceType + props.piece.pieceColor + props.index.x + props.index.y}
-                        src={getImageSrc(props.piece.pieceType, props.piece.pieceColor)}
-                        draggable={true}
-                        onDragStart={(event: any) => { props.boardDragStartListener(event, props.index) }}
-                    />
-                    : (<></>)
-
-            }
-            <span className={styles.debug}>({props.index.x + ", " + props.index.y}) </span>
-            <img src={'assets/moveIndicator.svg'} className={[styles.moveIndicator, (props.showMoveIndicator) ? styles.showMoveIndicator : " "].join(' ')} />
-
-        </div>
-    )
 }
