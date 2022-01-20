@@ -33,25 +33,22 @@ export default class ChessPromotionSelector extends Component<ChessPromotionSele
         translateString: ""
     }
 
-
-
+    /**
+     * @returns true if the promtion selector should be flipped
+     */
     private flip = () => (this.props.index.x == 0 !== this.props.boardFlipped)
-    private getAbsoluteIndexfromIndex = (): Coordinate => {
-        if (this.props.boardFlipped) {
-            return new Coordinate(this.props.index.x, 7 - this.props.index.y)
 
-        }
-        else {
-            return new Coordinate(7 - this.props.index.x, this.props.index.y)
-        }
-    }
 
-    getTranslateFromIndex = () => {
-        const index = this.getAbsoluteIndexfromIndex()
-        return `translate(${(index.y) * 10}vmin, ${(this.flip()) ? "40vmin" : "0vmin"})`
-    }
+    /**
+     * @returns The absolute index of the square (indices not affected by flipping board)
+     */
+    private getAbsoluteIndexfromIndex = (): Coordinate => (this.props.boardFlipped) ? new Coordinate(this.props.index.x, 7 - this.props.index.y)
+                                                                                    : new Coordinate(7 - this.props.index.x, this.props.index.y)
 
-    boardClickListener = () => { }
+    /**
+     * @returns the translate string which sets the positon of the promotion selector
+     */
+    getTranslateFromIndex = () => `translate(${(this.getAbsoluteIndexfromIndex().y) * 10}vmin, ${(this.flip()) ? "40vmin" : "0vmin"})`
 
     componentDidMount() {
         this.setState({
@@ -59,10 +56,8 @@ export default class ChessPromotionSelector extends Component<ChessPromotionSele
         })
     }
 
-
     componentDidUpdate(prevProps: ChessPromotionSelectorProps) {
         if (this.props.boardFlipped !== prevProps.boardFlipped) {
-            console.log("updated")
             this.setState({
                 translateString: this.getTranslateFromIndex()
             })
@@ -115,8 +110,5 @@ export default class ChessPromotionSelector extends Component<ChessPromotionSele
                 }
             </div>
         )
-
-
-
     }
 }
