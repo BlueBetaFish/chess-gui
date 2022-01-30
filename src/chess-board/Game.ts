@@ -43,9 +43,9 @@ export default class Game {
     // currentPlayer: Color | undefined;
 
     //*if gameStatus for current game object is not evaluated, then it is null
-    private gameStatus: GameStatus | null;
+    gameStatus: GameStatus | null;
     //*if kingInCheckCoordinate for current game object is not evaluated, then it is null
-    private kingInCheckCoordinate: Coordinate | null;
+    kingInCheckCoordinate: Coordinate | null;
 
     constructor(fen: string = START_BOARD_FEN) {
         this.board = FENToBoard(fen);
