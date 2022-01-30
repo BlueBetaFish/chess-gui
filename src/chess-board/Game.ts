@@ -42,8 +42,19 @@ export default class Game {
     //*Dont include. It is causing redundancy problem
     // currentPlayer: Color | undefined;
 
+    //*if gameStatus for current game object is not evaluated, then it is null
+    private gameStatus: GameStatus | null;
+    //*if kingInCheckCoordinate for current game object is not evaluated, then it is null
+    private kingInCheckCoordinate: Coordinate | null;
+
     constructor(fen: string = START_BOARD_FEN) {
         this.board = FENToBoard(fen);
+
+        this.gameStatus = null;
+        this.kingInCheckCoordinate = null;
+
+        this.gameStatus = this.getGameStatus();
+        this.kingInCheckCoordinate = this.getCurrentPlayerKingInCheckCoordinate();
 
         // this.currentPlayer = this.board?.currentPlayer;
         this.moveHistory = [];
@@ -148,21 +159,40 @@ export default class Game {
         //*add move to moveHistory
         this.moveHistory.push(move);
 
+        //*IMPORTANT: update kingInCheckCoordinate
+        this.kingInCheckCoordinate = null;
+        //*update gameStatus
+        this.gameStatus = null;
+
+        this.gameStatus = this.getGameStatus();
+        this.kingInCheckCoordinate = this.getCurrentPlayerKingInCheckCoordinate();
+
         if (this.board) console.log("new Board : " + boardToFEN(this.board));
 
         // console.log("gameStatus after executing move: " + this.getGameStatus());
     }
-
     /**
      *
-     * @returns { isKingInCheck: boolean; kingCoordinate: Coordinate }
-     * if current player's king is in check , returns ---> {isKingInCheck : true, kingCoordinate : coordinate of current player's king}
-     *                                 else , returns ---> {isKingInCheck : false, kingCoordinate : (-1,-1)}
-     *                                 if board is null , returns null
+     * @returns  Coordinate
+     * if current player's king is in check , returns --->  coordinate of current player's king
+     *                                 else , returns --->  Coordinate(-1,-1)
      */
-    isCurrentPlayerKingInCheck(): { isKingInCheck: boolean; kingCoordinate: Coordinate } | null {
-        if (!this.board) return null;
-        return this.board?.isCurrentPlayerKingInCheck();
+    getCurrentPlayerKingInCheckCoordinate(): Coordinate {
+        if (!this.board) return new Coordinate(-1, -1);
+
+        if (this.kingInCheckCoordinate !== null) {
+            return this.kingInCheckCoordinate;
+        }
+        return (this.kingInCheckCoordinate = this.board?.getCurrentPlayerKingInCheckCoordinate());
+    }
+
+    //*TODO: remove it later
+    isCurrentPlayerKingInCheck(): { isKingInCheck: boolean; kingCoordinate: Coordinate } {
+        if (this.getCurrentPlayerKingInCheckCoordinate().equals(new Coordinate(-1, -1))) return { isKingInCheck: false, kingCoordinate: new Coordinate(-1, -1) };
+
+        // console.log("king in check : king Coordinate : (" + this.getCurrentPlayerKingInCheckCoordinate().x + ", " + this.getCurrentPlayerKingInCheckCoordinate().y + " )");
+
+        return { isKingInCheck: true, kingCoordinate: this.getCurrentPlayerKingInCheckCoordinate() };
     }
 
     /**
@@ -176,6 +206,13 @@ export default class Game {
     getGameStatus(): GameStatus | null {
         if (!this.board) return null;
 
-        return this.board?.getGameStatus();
+        console.log("gameStatus: ");
+        console.log(this.gameStatus);
+
+        if (this.gameStatus !== null) return this.gameStatus;
+
+        console.log("gameStatus: ");
+        console.log(this.gameStatus);
+        return (this.gameStatus = this.board?.getGameStatus());
     }
 }

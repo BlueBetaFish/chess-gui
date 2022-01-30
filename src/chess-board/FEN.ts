@@ -10,6 +10,8 @@ const PIECE_SYMBOLS = ["k", "q", "r", "b", "n", "p", "K", "Q", "R", "B", "N", "P
 //castling bog : r3kb1r/1pp2pp1/p4n1p/1q1pNb2/5B2/P1N1P3/1PPQ1PPP/R3K2R w KQkq - 0 1
 //castling bog : rn2kbnr/ppp1pppp/3q4/3p4/3P2b1/3Q1N1P/PPP1PPP1/RNB1KB1R b KQkq - 0 1 (caslting with inbetween pieces)
 
+//StalemAte position : 7K/8/8/8/8/1Q6/3Q4/k7 w - - 0 1
+
 //test position for number of positions : rnbq1k1r/pp1Pbppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R w KQ - 1 8
 //7k/3P4/8/8/8/8/8/K7 w - - 1 8
 

@@ -900,11 +900,11 @@ export class Board {
 
     /**
      *
-     * @returns { isKingInCheck: boolean; kingCoordinate: Coordinate }
-     * if current player's king is in check , returns ---> {isKingInCheck : true, kingCoordinate : coordinate of current player's king}
-     *                                 else , returns ---> {isKingInCheck : false, kingCoordinate : (-1,-1)}
+     * @returns  Coordinate
+     * if current player's king is in check , returns --->  coordinate of current player's king
+     *                                 else , returns --->  Coordinate(-1,-1)
      */
-    isCurrentPlayerKingInCheck(): { isKingInCheck: boolean; kingCoordinate: Coordinate } {
+    getCurrentPlayerKingInCheckCoordinate(): Coordinate {
         //*get all pseudo legal moves of opponent and check if opponent can capture my king or not
         const opponentPlayer = this.currentPlayer === Color.WHITE ? Color.BLACK : Color.WHITE;
         const n = this.boardSize;
@@ -921,13 +921,13 @@ export class Board {
 
                     for (const move of moves) {
                         if (move.capturedPiece.equals(new Piece(PieceType.KING, this.currentPlayer))) {
-                            return { isKingInCheck: true, kingCoordinate: new Coordinate(move.toSquare.x, move.toSquare.y) };
+                            return new Coordinate(move.toSquare.x, move.toSquare.y);
                         }
                     }
                 }
             }
         }
-        return { isKingInCheck: false, kingCoordinate: new Coordinate(-1, -1) };
+        return new Coordinate(-1, -1);
     }
 
     /**
@@ -949,7 +949,7 @@ export class Board {
         if (this.getAllLegalMovesOfCurrentPlayer().length > 0) return GameStatus.RUNNING;
 
         // if current player has no move
-        if (this.isCurrentPlayerKingInCheck().isKingInCheck) return GameStatus.CHECKMATE;
+        if (!this.getCurrentPlayerKingInCheckCoordinate().equals(new Coordinate(-1, -1))) return GameStatus.CHECKMATE;
         else return GameStatus.STALEMATE;
     }
 
