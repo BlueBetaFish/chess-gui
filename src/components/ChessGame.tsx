@@ -14,11 +14,10 @@ type GameProps = {
 }
 
 type GameState = {
-    gameBoard: Board | null,
-    askForPromotion: boolean,
-    checkIndex: Coordinate,
-    gameStatus: GameStatus
+    game: Game,
 
+
+    askForPromotion: boolean,
     movesList: Move[],
     currentSelected: Coordinate
     promoteToPiece: PieceType,
@@ -31,12 +30,10 @@ type GameState = {
 export default class ChessGame extends Component<GameProps, GameState> {
 
     state: Readonly<GameState> = {
-        movesList: [],
-        gameBoard: this.props.gameObj.board,
-        askForPromotion: false, //Can be denoted by index
-        checkIndex: new Coordinate(),
-        gameStatus: GameStatus.RUNNING,
+        game: this.props.gameObj,
 
+        movesList: [],
+        askForPromotion: false, //Can be denoted by index
         currentSelected: new Coordinate(),
         promoteToPiece: PieceType.NONE,
         promoteToIndex: new Coordinate(),
@@ -45,16 +42,15 @@ export default class ChessGame extends Component<GameProps, GameState> {
 
     constructor(props: GameProps) {
         super(props)
-        this.moveClickListener = this.moveClickListener.bind(this);
         this.dropListener = this.dropListener.bind(this);
         this.dragStartListener = this.dragStartListener.bind(this);
         this.promotionClickListener = this.promotionClickListener.bind(this);
     }
 
-    moveClickListener(event: any, index: Coordinate) {
+    moveClickListener = (event: any, index: Coordinate) => {
         const move = getIndexinMoveList(index, this.state.movesList);
 
-        if (this.state.askForPromotion || this.state.gameStatus === GameStatus.CHECKMATE || this.state.gameStatus === GameStatus.STALEMATE) {
+        if (this.state.askForPromotion || this.state.game.gameStatus === GameStatus.CHECKMATE || this.state.game.gameStatus === GameStatus.STALEMATE) {
             //Freeze UI
         }
         else if (index.equals(this.state.currentSelected)) {
@@ -73,11 +69,9 @@ export default class ChessGame extends Component<GameProps, GameState> {
                 })
             }
             else {
-                this.props.gameObj.executeMoveAndMutateGame(move);
+                this.state.game.executeMoveAndMutateGame(move);
                 this.setState({
-                    gameBoard: this.props.gameObj.board,
-                    checkIndex: this.props.gameObj.isCurrentPlayerKingInCheck()?.kingCoordinate ?? new Coordinate(),
-                    gameStatus: this.props.gameObj.getGameStatus() ?? GameStatus.RUNNING,
+                    game: this.state.game,
                     movesList: [],
                 })
                 console.log("click set", this.props.gameObj.getGameStatus())
@@ -85,29 +79,29 @@ export default class ChessGame extends Component<GameProps, GameState> {
         }
         else {
             this.setState({
-                movesList: this.props.gameObj.getLegalMovesOfGivenSquare(index),
+                movesList: this.state.game.getLegalMovesOfGivenSquare(index),
                 currentSelected: index
             })
         }
     }
 
-    promotionClickListener(event: any, pieceType: PieceType) {
+    promotionClickListener = (event: any, pieceType: PieceType) => {
         this.setState({
             promoteToPiece: pieceType
         })
     }
 
-    dragStartListener(event: any, index: Coordinate) {
+    dragStartListener = (event: any, index: Coordinate) => {
 
         if (!this.state.askForPromotion) {
             this.setState({
-                movesList: this.props.gameObj.getLegalMovesOfGivenSquare(index),
+                movesList: this.state.game.getLegalMovesOfGivenSquare(index),
                 currentSelected: index
             })
         }
     }
 
-    dropListener(event: any, index: Coordinate) {
+    dropListener = (event: any, index: Coordinate) => {
         const move = getIndexinMoveList(index, this.state.movesList);
 
         if (move !== undefined && !this.state.askForPromotion) {
@@ -122,9 +116,7 @@ export default class ChessGame extends Component<GameProps, GameState> {
                 this.props.gameObj.executeMoveAndMutateGame(move);
 
                 this.setState({
-                    gameBoard: this.props.gameObj.board,
-                    checkIndex: this.props.gameObj.isCurrentPlayerKingInCheck()?.kingCoordinate ?? new Coordinate(),
-                    gameStatus: this.props.gameObj.getGameStatus() ?? GameStatus.RUNNING,
+                    game: this.state.game,
                     movesList: [],
                     currentSelected: new Coordinate()
                 })
@@ -135,15 +127,13 @@ export default class ChessGame extends Component<GameProps, GameState> {
 
 
 
-    componentDidUpdate(prevProps: GameProps) {
+    componentDidUpdate = (prevProps: GameProps) => {
         if (prevProps.gameObj !== this.props.gameObj) {
             this.setState({
+                game: this.props.gameObj,
+
                 movesList: [],
-                gameBoard: this.props.gameObj.board,
                 askForPromotion: false, //Can be denoted by index
-                checkIndex: new Coordinate(),
-                gameStatus: GameStatus.RUNNING,
-        
                 currentSelected: new Coordinate(),
                 promoteToPiece: PieceType.NONE,
                 promoteToIndex: new Coordinate(),
@@ -158,8 +148,8 @@ export default class ChessGame extends Component<GameProps, GameState> {
             if (move !== undefined) {
                 this.props.gameObj.executeMoveAndMutateGame(move);
                 this.setState({
-                    gameBoard: this.props.gameObj.board,
-                    checkIndex: this.props.gameObj.isCurrentPlayerKingInCheck()?.kingCoordinate ?? new Coordinate(),
+                    game: this.props.gameObj,
+
                     movesList: [],
                     askForPromotion: false,
                     promoteToPiece: PieceType.NONE,
@@ -185,16 +175,16 @@ export default class ChessGame extends Component<GameProps, GameState> {
                     <></>
                 }
                 <ChessBoard
-                    boardObj={this.state.gameBoard}
+                    boardObj={this.state.game.board}
                     gameClickListener={this.moveClickListener}
                     gameDropListener={this.dragStartListener}
                     gameDragOverListener={this.dropListener}
                     showMoveinSquare={this.state.movesList}
                     flipBoard={this.props.flipGame}
-                    checkIndex={this.state.checkIndex}
+                    checkIndex={this.state.game.kingInCheckCoordinate ?? new Coordinate()}
                 />
-                {(this.state.gameStatus === GameStatus.CHECKMATE || this.state.gameStatus === GameStatus.STALEMATE) ?
-                    <span >{this.state.gameStatus}! <a href='/'>Reload.</a></span> :
+                {(this.state.game.gameStatus === GameStatus.CHECKMATE || this.state.game.gameStatus === GameStatus.STALEMATE) ?
+                    <span >{this.state.game.gameStatus}! <a href='/'>Reload.</a></span> :
                     <></>
                 }
             </div>
