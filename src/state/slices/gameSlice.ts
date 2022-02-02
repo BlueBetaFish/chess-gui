@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import Game, { } from '../../chess-board/Game'
+import Game from '../../chess-board/Game'
 
 type GameState = {
     gameObj: Game
@@ -10,10 +10,11 @@ const initialState: GameState = {
 };
 
 const gameSlice = createSlice({
-    name: 'game',
+    name: 'AppState',
     initialState,
     reducers: {
         updateGame(state, action: PayloadAction<Game>) {
+            console.log("called")
             state.gameObj = action.payload;
         },
     },

@@ -23,7 +23,7 @@ export default class App extends Component<any, AppState> {
     render() {
         return (
             <div className="App">
-                <ChessGame gameObj={this.state.gameObj} flipGame={this.state.flip} />
+                <ChessGame propGameObj={this.state.gameObj} flipGame={this.state.flip} />
                 <form>
                     <input
                         type="text"

@@ -206,13 +206,13 @@ export default class Game {
     getGameStatus(): GameStatus | null {
         if (!this.board) return null;
 
-        console.log("gameStatus: ");
-        console.log(this.gameStatus);
+        // console.log("gameStatus: ");
+        // console.log(this.gameStatus);
 
         if (this.gameStatus !== null) return this.gameStatus;
 
-        console.log("gameStatus: ");
-        console.log(this.gameStatus);
+        // console.log("gameStatus: ");
+        // console.log(this.gameStatus);
         return (this.gameStatus = this.board?.getGameStatus());
     }
 }

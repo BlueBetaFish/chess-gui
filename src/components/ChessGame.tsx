@@ -3,18 +3,28 @@ import ChessBoard from './ChessBoard'
 import Game from '../chess-board/Game'
 import { Coordinate, getIndexinMoveList, GameStatus } from '../chess-board/chessUtility'
 import Move from '../chess-board/Move'
-import { Board } from '../chess-board/Board'
 import styles from "../styles/ChessGame.module.css"
 import ChessPromotionSelector from './ChessPromotionSelector'
 import Piece, { Color, PieceType } from '../chess-board/Pieces'
+import { connect, ConnectedProps } from "react-redux";
+import { RootState } from "../state/store"
+import { updateGame } from '../state/slices/gameSlice'
 
-type GameProps = {
-    gameObj: Game
+
+
+type PropsFromRedux = ConnectedProps<typeof connector>
+
+interface GameProps extends PropsFromRedux {
+    propGameObj: Game
     flipGame?: boolean
 }
 
+interface DispatchProps {
+    updateGame: () => void
+}
+
 type GameState = {
-    game: Game,
+    // game: Game,
 
 
     askForPromotion: boolean,
@@ -27,11 +37,10 @@ type GameState = {
 }
 
 
-export default class ChessGame extends Component<GameProps, GameState> {
+export class ChessGame extends Component<GameProps, GameState> {
 
     state: Readonly<GameState> = {
-        game: this.props.gameObj,
-
+        // game: this.props.gameObj,
         movesList: [],
         askForPromotion: false, //Can be denoted by index
         currentSelected: new Coordinate(),
@@ -42,15 +51,13 @@ export default class ChessGame extends Component<GameProps, GameState> {
 
     constructor(props: GameProps) {
         super(props)
-        this.dropListener = this.dropListener.bind(this);
-        this.dragStartListener = this.dragStartListener.bind(this);
-        this.promotionClickListener = this.promotionClickListener.bind(this);
+        // console.log("redux", this.props)
     }
 
     moveClickListener = (event: any, index: Coordinate) => {
         const move = getIndexinMoveList(index, this.state.movesList);
 
-        if (this.state.askForPromotion || this.state.game.gameStatus === GameStatus.CHECKMATE || this.state.game.gameStatus === GameStatus.STALEMATE) {
+        if (this.state.askForPromotion || this.props.gameObj.gameStatus === GameStatus.CHECKMATE || this.props.gameObj.gameStatus === GameStatus.STALEMATE) {
             //Freeze UI
         }
         else if (index.equals(this.state.currentSelected)) {
@@ -69,9 +76,10 @@ export default class ChessGame extends Component<GameProps, GameState> {
                 })
             }
             else {
-                this.state.game.executeMoveAndMutateGame(move);
+                this.props.gameObj.executeMoveAndMutateGame(move);
+                this.props.dispatch(updateGame(this.props.gameObj));
+
                 this.setState({
-                    game: this.state.game,
                     movesList: [],
                 })
                 console.log("click set", this.props.gameObj.getGameStatus())
@@ -79,7 +87,7 @@ export default class ChessGame extends Component<GameProps, GameState> {
         }
         else {
             this.setState({
-                movesList: this.state.game.getLegalMovesOfGivenSquare(index),
+                movesList: this.props.gameObj.getLegalMovesOfGivenSquare(index),
                 currentSelected: index
             })
         }
@@ -95,7 +103,7 @@ export default class ChessGame extends Component<GameProps, GameState> {
 
         if (!this.state.askForPromotion) {
             this.setState({
-                movesList: this.state.game.getLegalMovesOfGivenSquare(index),
+                movesList: this.props.gameObj.getLegalMovesOfGivenSquare(index),
                 currentSelected: index
             })
         }
@@ -114,9 +122,9 @@ export default class ChessGame extends Component<GameProps, GameState> {
             }
             else {
                 this.props.gameObj.executeMoveAndMutateGame(move);
+                this.props.dispatch(updateGame(this.props.gameObj));
 
                 this.setState({
-                    game: this.state.game,
                     movesList: [],
                     currentSelected: new Coordinate()
                 })
@@ -128,10 +136,12 @@ export default class ChessGame extends Component<GameProps, GameState> {
 
 
     componentDidUpdate = (prevProps: GameProps) => {
-        if (prevProps.gameObj !== this.props.gameObj) {
-            this.setState({
-                game: this.props.gameObj,
+        if (prevProps.propGameObj !== this.props.propGameObj) {
+            console.log("called cdu")
 
+            this.props.dispatch(updateGame(this.props.propGameObj))
+
+            this.setState({
                 movesList: [],
                 askForPromotion: false, //Can be denoted by index
                 currentSelected: new Coordinate(),
@@ -147,9 +157,9 @@ export default class ChessGame extends Component<GameProps, GameState> {
             )
             if (move !== undefined) {
                 this.props.gameObj.executeMoveAndMutateGame(move);
-                this.setState({
-                    game: this.props.gameObj,
+                this.props.dispatch(updateGame(this.props.gameObj));
 
+                this.setState({
                     movesList: [],
                     askForPromotion: false,
                     promoteToPiece: PieceType.NONE,
@@ -175,16 +185,16 @@ export default class ChessGame extends Component<GameProps, GameState> {
                     <></>
                 }
                 <ChessBoard
-                    boardObj={this.state.game.board}
+                    boardObj={this.props.gameObj.board}
                     gameClickListener={this.moveClickListener}
                     gameDropListener={this.dragStartListener}
                     gameDragOverListener={this.dropListener}
                     showMoveinSquare={this.state.movesList}
                     flipBoard={this.props.flipGame}
-                    checkIndex={this.state.game.kingInCheckCoordinate ?? new Coordinate()}
+                    checkIndex={this.props.gameObj.kingInCheckCoordinate ?? new Coordinate()}
                 />
-                {(this.state.game.gameStatus === GameStatus.CHECKMATE || this.state.game.gameStatus === GameStatus.STALEMATE) ?
-                    <span >{this.state.game.gameStatus}! <a href='/'>Reload.</a></span> :
+                {(this.props.gameObj.gameStatus === GameStatus.CHECKMATE || this.props.gameObj.gameStatus === GameStatus.STALEMATE) ?
+                    <span >{this.props.gameObj.gameStatus}! <a href='/'>Reload.</a></span> :
                     <></>
                 }
             </div>
@@ -194,3 +204,12 @@ export default class ChessGame extends Component<GameProps, GameState> {
         )
     }
 }
+
+const mapStateToProps = (state: RootState) => state.game
+// const mapDispatchToProps = {
+//     updateGame: () => ({ type: '' }),
+// }
+const connector = connect(mapStateToProps)
+
+
+export default connector(ChessGame)
