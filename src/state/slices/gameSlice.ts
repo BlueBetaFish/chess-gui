@@ -1,12 +1,14 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import Game from '../../chess-board/Game'
+import { START_BOARD_FEN } from "../../chess-board/FEN";
+
 
 type GameState = {
     gameObj: Game
 }
 
 const initialState: GameState = {
-    gameObj: new Game(),
+    gameObj: new Game(START_BOARD_FEN),
 };
 
 const gameSlice = createSlice({

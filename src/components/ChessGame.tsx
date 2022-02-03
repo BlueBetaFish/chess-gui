@@ -9,6 +9,7 @@ import Piece, { Color, PieceType } from '../chess-board/Pieces'
 import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "../state/store"
 import { updateGame } from '../state/slices/gameSlice'
+import { boardToFEN } from '../chess-board/FEN'
 
 
 
@@ -24,8 +25,6 @@ interface DispatchProps {
 }
 
 type GameState = {
-    // game: Game,
-
 
     askForPromotion: boolean,
     movesList: Move[],
@@ -40,7 +39,7 @@ type GameState = {
 export class ChessGame extends Component<GameProps, GameState> {
 
     state: Readonly<GameState> = {
-        // game: this.props.gameObj,
+
         movesList: [],
         askForPromotion: false, //Can be denoted by index
         currentSelected: new Coordinate(),
@@ -49,12 +48,8 @@ export class ChessGame extends Component<GameProps, GameState> {
         promotionColor: Color.UNDEFINED,
     }
 
-    constructor(props: GameProps) {
-        super(props)
-        // console.log("redux", this.props)
-    }
-
     moveClickListener = (event: any, index: Coordinate) => {
+
         const move = getIndexinMoveList(index, this.state.movesList);
 
         if (this.state.askForPromotion || this.props.gameObj.gameStatus === GameStatus.CHECKMATE || this.props.gameObj.gameStatus === GameStatus.STALEMATE) {
@@ -77,7 +72,7 @@ export class ChessGame extends Component<GameProps, GameState> {
             }
             else {
                 this.props.gameObj.executeMoveAndMutateGame(move);
-                this.props.dispatch(updateGame(this.props.gameObj));
+                if (this.props.gameObj.board) this.props.dispatch(updateGame(new Game(boardToFEN(this.props.gameObj.board) ?? "")));
 
                 this.setState({
                     movesList: [],
@@ -122,7 +117,7 @@ export class ChessGame extends Component<GameProps, GameState> {
             }
             else {
                 this.props.gameObj.executeMoveAndMutateGame(move);
-                this.props.dispatch(updateGame(this.props.gameObj));
+                if (this.props.gameObj.board) this.props.dispatch(updateGame(new Game(boardToFEN(this.props.gameObj.board) ?? "")));
 
                 this.setState({
                     movesList: [],
@@ -132,8 +127,6 @@ export class ChessGame extends Component<GameProps, GameState> {
             }
         }
     }
-
-
 
     componentDidUpdate = (prevProps: GameProps) => {
         if (prevProps.propGameObj !== this.props.propGameObj) {
@@ -157,7 +150,7 @@ export class ChessGame extends Component<GameProps, GameState> {
             )
             if (move !== undefined) {
                 this.props.gameObj.executeMoveAndMutateGame(move);
-                this.props.dispatch(updateGame(this.props.gameObj));
+                if (this.props.gameObj.board) this.props.dispatch(updateGame(new Game(boardToFEN(this.props.gameObj.board) ?? "")));
 
                 this.setState({
                     movesList: [],
@@ -198,18 +191,12 @@ export class ChessGame extends Component<GameProps, GameState> {
                     <></>
                 }
             </div>
-
-
-
         )
     }
 }
 
 const mapStateToProps = (state: RootState) => state.game
-// const mapDispatchToProps = {
-//     updateGame: () => ({ type: '' }),
-// }
-const connector = connect(mapStateToProps)
 
+const connector = connect(mapStateToProps)
 
 export default connector(ChessGame)
