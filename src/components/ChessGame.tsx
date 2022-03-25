@@ -10,6 +10,7 @@ import { connect, ConnectedProps } from "react-redux";
 import { RootState } from "../state/store"
 import { updateGame } from '../state/slices/gameSlice'
 import { boardToFEN } from '../chess-board/FEN'
+import GameOverModal from './GameOverModal'
 
 
 
@@ -167,6 +168,7 @@ export class ChessGame extends Component<GameProps, GameState> {
         return (
 
             <div className={styles.container}>
+
                 {(this.state.askForPromotion) ?
                     <ChessPromotionSelector
                         index={this.state.promoteToIndex}
@@ -186,10 +188,8 @@ export class ChessGame extends Component<GameProps, GameState> {
                     flipBoard={this.props.flipGame}
                     checkIndex={this.props.gameObj.kingInCheckCoordinate ?? new Coordinate()}
                 />
-                {(this.props.gameObj.gameStatus === GameStatus.CHECKMATE || this.props.gameObj.gameStatus === GameStatus.STALEMATE) ?
-                    <span >{this.props.gameObj.gameStatus}! <a href='/'>Reload.</a></span> :
-                    <></>
-                }
+                {/* <GameOverModal gameStatus={this.props.gameObj.gameStatus} /> */}
+                <GameOverModal gameStatus={GameStatus.STALEMATE} winner={Color.WHITE} />
             </div>
         )
     }
