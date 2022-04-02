@@ -21,6 +21,12 @@ export default class GameOverModal extends Component<any, GameOverModalProps> {
                 return (
                     <div className={styles.modal}>
                         <div className={styles.modalBox}>
+                            <span className={styles.close} onClick={() => {
+                                const modal = document.querySelector(`.${styles.modal}`) as HTMLElement | null;
+                                if (modal) modal.style.display = "none"
+                            }}>
+                                &times;
+                            </span>
                             {((this.props.winner == Color.WHITE) ? "White" : "Black") + " won!"}
                             <img src={this.themeStringPrefix + ((this.props.winner == Color.WHITE) ? "wk.svg" : "bk.svg")} />
                             <span><a href="/">New Match?</a></span>
@@ -31,10 +37,16 @@ export default class GameOverModal extends Component<any, GameOverModalProps> {
                 return (
                     <div className={styles.modal}>
                         <div className={styles.modalBox}>
+                            <span className={styles.close} onClick={() => {
+                                const modal = document.querySelector(`.${styles.modal}`) as HTMLElement | null;
+                                if (modal) modal.style.display = "none"
+                            }}>
+                                &times;
+                            </span>
                             Draw by Stalemate!
-                            <div className={styles.drawDiv}>
+                            < div className={styles.drawDiv} >
                                 <img src={this.themeStringPrefix + "wk.svg"} />
-                                 ½ - ½ 
+                                ½ - ½
                                 <img src={this.themeStringPrefix + "bk.svg"} />
                             </div>
                             <span><a href="/">New Match?</a></span>
