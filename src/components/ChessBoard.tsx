@@ -9,9 +9,9 @@ import Move from '../chess-board/Move';
 type BoardProps = {
     boardObj: Board | null,
     showMoveinSquare: Move[],
-    gameClickListener: any,
-    gameDropListener: any,
-    gameDragOverListener: any,
+    gameClickListener: (event: React.MouseEvent<HTMLDivElement, MouseEvent>, index: Coordinate) => void,
+    gameDropListener: (event: React.DragEvent<HTMLImageElement>, index: Coordinate) => void,
+    gameDragOverListener: (event: React.DragEvent<HTMLDivElement>, index: Coordinate) => void,
     checkIndex: Coordinate,
     flipBoard?: boolean
 }

@@ -9,9 +9,9 @@ type ChessSquareProps = {
     piece: Piece,
     index: Coordinate,
     colorIndex: Coordinate,
-    boardClickListener: any,
-    boardDropListener: any,
-    boardDragStartListener: any,
+    boardClickListener: (event: React.MouseEvent<HTMLDivElement, MouseEvent>, index: Coordinate) => void,
+    boardDropListener: (event: React.DragEvent<HTMLDivElement>, index: Coordinate) => void,
+    boardDragStartListener: (event: React.DragEvent<HTMLImageElement>, index: Coordinate) => void,
     showMoveIndicator: boolean,
     isInCheck: boolean,
     theme?: string
@@ -94,17 +94,17 @@ export default class ChessSquare extends Component<ChessSquareProps, any> {
             <div className={
                 [styles.grid, (this.isLightSquare()) ? styles.light : styles.dark].join(' ')}
                 onClick={(event) => { this.props.boardClickListener(event, this.props.index) }}
-                onDrop={(event: any) => { this.props.boardDropListener(event, this.props.index) }}
-                onDragOver={(event: any) => { event.preventDefault() }}
-                style={(this.props.isInCheck) ? { backgroundColor: "#E67B6E" } : {}} 
-                >
+                onDrop={(event) => { this.props.boardDropListener(event, this.props.index) }}
+                onDragOver={(event) => { event.preventDefault() }}
+                style={(this.props.isInCheck) ? { backgroundColor: "#E67B6E" } : {}}
+            >
                 {
                     (this.props.piece.pieceColor !== Color.UNDEFINED) ?
                         <img
                             id={this.props.piece.pieceType + this.props.piece.pieceColor + this.props.index.x + this.props.index.y}
                             src={this.getImageSrc(this.props.piece.pieceType, this.props.piece.pieceColor)}
                             draggable={true}
-                            onDragStart={(event: any) => { this.props.boardDragStartListener(event, this.props.index) }}
+                            onDragStart={(event) => { this.props.boardDragStartListener(event, this.props.index) }}
                         />
                         : (<></>)
                 }

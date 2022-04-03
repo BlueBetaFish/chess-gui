@@ -9,7 +9,7 @@ type ChessPromotionSelectorProps = {
     peiceColor: Color,
     index: Coordinate,
     boardFlipped: boolean,
-    promotionClickListener: any
+    promotionClickListener: (event: React.MouseEvent<HTMLDivElement, MouseEvent>, peiceType: PieceType) => void
 }
 
 type ChessPromotionSelectorState = {
@@ -43,7 +43,7 @@ export default class ChessPromotionSelector extends Component<ChessPromotionSele
      * @returns The absolute index of the square (indices not affected by flipping board)
      */
     private getAbsoluteIndexfromIndex = (): Coordinate => (this.props.boardFlipped) ? new Coordinate(this.props.index.x, 7 - this.props.index.y)
-                                                                                    : new Coordinate(7 - this.props.index.x, this.props.index.y)
+        : new Coordinate(7 - this.props.index.x, this.props.index.y)
 
     /**
      * @returns the translate string which sets the positon of the promotion selector

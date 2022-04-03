@@ -5,7 +5,7 @@ import styles from '../styles/ChessPromotionSelectorSquare.module.css';
 
 type ChessPromotionSelectorSquareProps = {
     piece: Piece,
-    boardClickListener: any
+    boardClickListener: (event: React.MouseEvent<HTMLDivElement, MouseEvent>, peiceType: PieceType) => void
 }
 const themeStringPrefix = `assets/pieces/cardinal/`
 
